@@ -38,8 +38,16 @@
     var r=[],c='',q=false;
     for(var i=0;i<l.length;i++){
       var ch=l[i];
-      if(q){ if(ch==='"'){ if(i+1<l.length&&l[i+1]==='"'){c+='"';i++;}else q=false; }else c+=ch; }
-      else { if(ch==='"') q=true; else if(ch===','){ r.push(c); c=''; } else c+=ch; }
+      if(q){ if(ch==='"'){
+          if(i+1<l.length&&l[i+1]==='"'){
+            c+='"';i++;
+          } else q=false;
+        } else c+=ch;
+      } else { if(ch==='"') q=true; else if(ch===','){
+          r.push(c);
+          c='';
+        } else c+=ch;
+      }
     }
     r.push(c);
     return r;
@@ -62,6 +70,8 @@
 
   w.AREA_DATA = typed('areas', ['id','is_primary','area_primary_id','customer_active','customer_isolir','customer_terminate','fasum']);
   w.AREA_TARGET = typed('area_targets', ['target','realisasi']);
+
+
   w.CUSTOMER_DATA = typed('customers', ['id']);
   w.WO_INSTALASI = typed('wo_instalasi', ['id']);
   w.WAITLIST_PSB = typed('waitlist_psb', ['id']);

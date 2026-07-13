@@ -1,232 +1,74 @@
-/* =========================================================
-   ERP SPVR - DUMMY DATA
-   Seluruh data pada file ini adalah data contoh (dummy)
-   untuk keperluan validasi kebutuhan bisnis (BRD).
-   ========================================================= */
-
-// Daftar Branch di bawah regional SPVR (mengikuti data existing ERP)
-const BRANCHES = [
-  "Temas", "Bumiaji", "Dau", "Pakis", "Blimbing",
-  "Pasuruan Selatan", "Karangploso", "Sawojajar",
-  "Pasuruan Utara", "Wendit", "Kedungkandang",
-  "Kota Lama", "Lawang", "Bangil"
-];
-
-const CUSTOMER_NAMES = ["Ahmad Fauzi","Budi Santoso","Rina Wijaya","Sinta Dewi","Agus Prasetyo","Maya Sari","Doni Kurniawan","Lestari Putri","Hendra Gunawan","Wulan Sari","Bayu Aditya","Citra Ayu"];
-const PACKAGES = ["Home 10 Mbps","Home 20 Mbps","Home 30 Mbps","Home 50 Mbps","Bisnis 50 Mbps"];
-const TEAMS = ["Team Alpha","Team Bravo","Team Charlie","Team Delta","Team Echo"];
-
-function pick(arr, i){ return arr[i % arr.length]; }
-function pad(n){ return n < 10 ? "0"+n : ""+n; }
-function randDate(startMonth){
-  const day = pad(1 + (startMonth * 7) % 28);
-  const months = ["Jan","Feb","Mar","Apr","May","Jun"];
-  return day + "-" + pick(months, startMonth) + "-26";
-}
-
-/* ---------------- MODUL AREA (Open Area & Overlay) ---------------- */
-const AREA_DATA = (function(){
-  const areaNames = ["PAPA","ORMO","BSUL","ETIK","LOCA","LAJA","SURA","KRBT","MABA","RITI","GADA","FABO","DAMA","LAHO","GOJO"];
-  const data = [];
-  let id = 1;
-  areaNames.forEach((name, idx) => {
-    const branch = pick(BRANCHES, idx);
-    const primaryId = id++;
-    data.push({
-      id: primaryId,
-      branch: branch,
-      area_name: name,
-      area_code: "AR-" + String(primaryId).padStart(3,"0"),
-      is_primary: 1,
-      area_primary_id: null,
-      open_date: randDate(idx),
-      customer_active: 40 + (idx * 7) % 90,
-      customer_isolir: 3 + (idx * 3) % 15,
-      customer_terminate: (idx * 2) % 8,
-      fasum: 2 + (idx % 5)
-    });
-    // setiap area primary punya 1 area overlay
-    data.push({
-      id: id++,
-      branch: branch,
-      area_name: name + " - Overlay",
-      area_code: "AR-" + String(id-1).padStart(3,"0"),
-      is_primary: 0,
-      area_primary_id: primaryId,
-      open_date: randDate(idx+1),
-      customer_active: 10 + (idx * 4) % 40,
-      customer_isolir: 1 + (idx * 2) % 8,
-      customer_terminate: idx % 4,
-      fasum: 1 + (idx % 3)
-    });
-  });
-  return data;
-})();
-
-// Target vs realisasi open area per branch (untuk bullet chart)
-const AREA_TARGET = BRANCHES.map((b, i) => ({
-  branch: b,
-  target: 6 + (i % 4),
-  realisasi: AREA_DATA.filter(a => a.branch === b && a.is_primary === 1).length + (i % 3)
-}));
-
-/* ---------------- MODUL SALES (Retention) ---------------- */
-const CUSTOMER_STATUS = ["Aktif","Isolir","Terminate"];
-const CUSTOMER_DATA = (function(){
-  const data = [];
-  for (let i = 0; i < 60; i++){
-    const branch = pick(BRANCHES, i);
-    const status = pick(CUSTOMER_STATUS, i % 5 === 0 ? 1 : (i % 7 === 0 ? 2 : 0));
-    data.push({
-      id: i+1,
-      branch: branch,
-      customer_name: pick(CUSTOMER_NAMES, i) + " " + (i+1),
-      phone: "0812" + String(30000000 + i*137).slice(0,8),
-      package: pick(PACKAGES, i),
-      pppoe_secret: "cust" + String(1000+i),
-      subscribe_date: randDate(i % 6),
-      expired_date: randDate((i+3) % 6),
-      status: status
-    });
-  }
-  return data;
-})();
-
-/* ---------------- MODUL OPERASIONAL - PSB / INSTALASI ---------------- */
-const WO_STATUS = ["Menunggu Teknisi","Dalam Proses","Selesai","Gagal Instalasi"];
-const WO_INSTALASI = (function(){
-  const data = [];
-  for (let i = 0; i < 25; i++){
-    data.push({
-      id: i+1,
-      branch: pick(BRANCHES, i),
-      pppoe_secret: "cust" + String(2000+i),
-      customer_name: pick(CUSTOMER_NAMES, i+2) + " " + (i+1),
-      team: pick(TEAMS, i),
-      katim: "Katim " + pick(["Rudi","Sani","Wawan","Doni","Eko"], i),
-      access: "P-" + (3 + (i % 20)),
-      sn: "SN" + String(500000+i*17),
-      status: pick(WO_STATUS, i)
-    });
-  }
-  return data;
-})();
-
-const WAITLIST_STATUS = ["Menunggu Pembayaran","Menunggu Penjadwalan"];
-const WAITLIST_PSB = (function(){
-  const data = [];
-  for (let i = 0; i < 18; i++){
-    data.push({
-      id: i+1,
-      branch: pick(BRANCHES, i+2),
-      customer_name: pick(CUSTOMER_NAMES, i+4) + " " + (i+1),
-      customer_id: "CUST" + String(9000+i),
-      package: pick(PACKAGES, i+1),
-      sales: pick(["Andi","Yusuf","Farida","Nia","Rahmat"], i),
-      surveyor: pick(["Bagus","Irwan","Dwi","Fitri"], i),
-      alamat: "Jl. Merdeka No. " + (i+1) + ", " + pick(BRANCHES, i+2),
-      status: pick(WAITLIST_STATUS, i)
-    });
-  }
-  return data;
-})();
-
-const TEAM_MONITORING = (function(){
-  const data = [];
-  TEAMS.forEach((t, idx) => {
-    BRANCHES.slice(0,6).forEach((b, j) => {
-      data.push({
-        branch: b,
-        team_name: t + " - " + b.slice(0,3).toUpperCase(),
-        lead_nip: "NIP" + String(70000 + idx*100 + j),
-        lead_name: pick(["Rudi Hartono","Sani Wijaya","Wawan Setiawan","Doni Saputra","Eko Purnomo"], idx),
-        lead_status: pick(["Pegawai","Training","Off"], (idx+j) % 5 === 0 ? 2 : (idx+j)%4===0 ? 1 : 0),
-        team_status: pick(["Aktif","Non Aktif"], (idx+j) % 6 === 0 ? 1 : 0)
-      });
-    });
-  });
-  return data;
-})();
-
-/* ---------------- MODUL OPERASIONAL - ISSUE & TSO ---------------- */
-const WO_TYPE = ["Gangguan Koneksi","Perangkat Rusak","Redaman Tinggi","Ganti Modem"];
-const TSO_STATUS = ["Wait List","Penjadwalan","Dalam Proses","Selesai"];
-const WO_TSO = (function(){
-  const data = [];
-  for (let i = 0; i < 22; i++){
-    data.push({
-      id: i+1,
-      branch: pick(BRANCHES, i+1),
-      type: pick(WO_TYPE, i),
-      pppoe_secret: "cust" + String(3000+i),
-      customer_name: pick(CUSTOMER_NAMES, i+6) + " " + (i+1),
-      team_katim: pick(TEAMS, i) + " / " + pick(["Rudi","Sani","Wawan"], i),
-      access: "P-" + (3 + (i % 15)),
-      status: pick(TSO_STATUS, i)
-    });
-  }
-  return data;
-})();
-
-/* ---------------- MODUL OPERASIONAL - DISMANTLE ---------------- */
-const DISMANTLE_STATUS = ["Menunggu Penjadwalan","Terjadwal Hari Ini","Selesai"];
-const WO_DISMANTLE = (function(){
-  const data = [];
-  for (let i = 0; i < 20; i++){
-    data.push({
-      id: i+1,
-      branch: pick(BRANCHES, i+3),
-      customer_name: pick(CUSTOMER_NAMES, i+8) + " " + (i+1),
-      pppoe_secret: "cust" + String(4000+i),
-      phone: "0813" + String(40000000 + i*211).slice(0,8),
-      sales: pick(["Andi","Yusuf","Farida","Nia"], i),
-      terminator: pick(["Bagus","Irwan","Dwi"], i),
-      alamat: "Jl. Diponegoro No. " + (i+2) + ", " + pick(BRANCHES, i+3),
-      expired_date: randDate(i % 6),
-      pickup_suggestion: randDate((i+1) % 6),
-      status: pick(DISMANTLE_STATUS, i)
-    });
-  }
-  return data;
-})();
-
-const HISTORI_DISMANTLE = (function(){
-  const data = [];
-  for (let i = 0; i < 15; i++){
-    data.push({
-      id: i+1,
-      branch: pick(BRANCHES, i+5),
-      customer_name: pick(CUSTOMER_NAMES, i+10) + " " + (i+1),
-      pppoe_secret: "cust" + String(5000+i),
-      phone: "0813" + String(50000000 + i*173).slice(0,8),
-      sales: pick(["Andi","Yusuf","Farida"], i),
-      terminator: pick(["Bagus","Irwan","Dwi"], i),
-      finish_date: randDate(i % 6),
-      result: pick(["Perangkat Kembali Lengkap","Perangkat Sebagian","Tidak Ditemukan"], i % 5 === 0 ? 2 : (i%3===0?1:0))
-    });
-  }
-  return data;
-})();
-
-/* ---------------- MODUL MPP - ACCOUNT EXECUTIVE ---------------- */
-const AE_DATA = (function(){
-  const data = [];
-  const names = ["Andi Wijaya","Yusuf Bahtiar","Farida Amelia","Nia Kartika","Rahmat Hidayat","Putri Ayu","Reza Pratama","Dewi Lestari"];
-  BRANCHES.forEach((b, idx) => {
-    const count = 2 + (idx % 3);
-    for (let j = 0; j < count; j++){
-      data.push({
-        branch: b,
-        nip: "AE" + String(8000 + idx*10 + j),
-        fullname: pick(names, idx+j),
-        nickname: pick(names, idx+j).split(" ")[0],
-        phone: "0821" + String(60000000 + idx*97 + j*13).slice(0,8),
-        status: (idx+j) % 7 === 0 ? "Non Aktif" : "Aktif"
-      });
+(function(w){
+  var csvDir = (function(){
+    var s = document.currentScript;
+    if(s && s.src){
+      var idx = s.src.indexOf('assets/js/data.js');
+      if(idx > -1) return s.src.slice(0, idx) + 'assets/data/';
     }
-  });
-  return data;
-})();
+    return 'assets/data/';
+  })();
 
-/* ---------------- MODUL MPP - TIM TEKNISI ---------------- */
-const TIM_TEKNISI_DATA = TEAM_MONITORING;
+  function loadCSV(file){
+    try {
+      var x = new XMLHttpRequest();
+      x.open('GET', csvDir + file, false);
+      x.send(null);
+      if(x.status === 200 || x.status === 0) return parseCSV(x.responseText);
+    } catch(e){ console.warn('CSV load failed:', file, e); }
+    return [];
+  }
+
+  function parseCSV(t){
+    var lines = t.trim().split('\n');
+    if(lines.length < 2) return [];
+    var h = lines[0].split(',').map(function(c){ return c.trim(); });
+    var out = [];
+    for(var i=1;i<lines.length;i++){
+      var vals = parseLine(lines[i]);
+      if(vals.length === h.length){
+        var o = {};
+        for(var j=0;j<h.length;j++) o[h[j]] = vals[j];
+        out.push(o);
+      }
+    }
+    return out;
+  }
+
+  function parseLine(l){
+    var r=[],c='',q=false;
+    for(var i=0;i<l.length;i++){
+      var ch=l[i];
+      if(q){ if(ch==='"'){ if(i+1<l.length&&l[i+1]==='"'){c+='"';i++;}else q=false; }else c+=ch; }
+      else { if(ch==='"') q=true; else if(ch===','){ r.push(c); c=''; } else c+=ch; }
+    }
+    r.push(c);
+    return r;
+  }
+
+  function num(v){ var n=Number(v); return isNaN(n)?v:n; }
+  function typed(name, numericFields){
+    return loadCSV(name+'.csv').map(function(r){
+      numericFields.forEach(function(f){
+        if(f === 'area_primary_id'){ r[f] = (r[f]===''||r[f]==='null') ? null : num(r[f]); }
+        else r[f] = num(r[f]);
+      });
+      return r;
+    });
+  }
+
+  w.BRANCHES = loadCSV('branches.csv').map(function(r){ return r.name; });
+  w.PACKAGES = loadCSV('packages.csv').map(function(r){ return r.name; });
+  w.TEAMS = loadCSV('teams.csv').map(function(r){ return r.name; });
+
+  w.AREA_DATA = typed('areas', ['id','is_primary','area_primary_id','customer_active','customer_isolir','customer_terminate','fasum']);
+  w.AREA_TARGET = typed('area_targets', ['target','realisasi']);
+  w.CUSTOMER_DATA = typed('customers', ['id']);
+  w.WO_INSTALASI = typed('wo_instalasi', ['id']);
+  w.WAITLIST_PSB = typed('waitlist_psb', ['id']);
+  w.TEAM_MONITORING = typed('team_monitoring', []);
+  w.WO_TSO = typed('wo_tso', ['id']);
+  w.WO_DISMANTLE = typed('wo_dismantle', ['id']);
+  w.HISTORI_DISMANTLE = typed('histori_dismantle', ['id']);
+  w.AE_DATA = typed('ae_data', []);
+  w.TIM_TEKNISI_DATA = w.TEAM_MONITORING;
+})(window);

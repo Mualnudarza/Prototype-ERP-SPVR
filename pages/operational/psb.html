@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSB / Instalasi | GriyaNet ERP</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div id="app-navbar"></div>
+<div class="container-fluid">
+  <div class="row">
+    <div id="app-sidebar"></div>
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+      <div class="pt-3 pb-2 mb-3 border-bottom">
+        <div class="page-breadcrumb">
+          <a href="../../index.html">Dashboard</a><span class="sep">/</span>
+          <span>Operational &amp; Technical</span><span class="sep">/</span>
+          <span class="text-dark">PSB / Instalasi</span>
+        </div>
+        <h1 class="h2 mb-0">PSB / Instalasi</h1>
+        <p class="text-muted mb-0">Monitoring proses pemasangan pelanggan baru, antrean wait list, dan beban kerja teknisi pada setiap branch.</p>
+      </div>
+
+      <div class="filter-bar">
+        <div class="row g-2 align-items-end">
+          <div class="col-6 col-md-3">
+            <label class="form-label mb-1">Branch</label>
+            <select id="filterBranch" class="form-select form-select-sm"></select>
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label mb-1">Tanggal</label>
+            <input type="date" class="form-control form-control-sm" id="filterTanggal" value="2026-07-13">
+          </div>
+          <div class="col-6 col-md-3">
+            <a href="#" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#teamModal">Monitoring Tim</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-3">
+        <div class="col-6 col-md-3"><div class="kpi-card"><div class="kpi-label">WO Instalasi Hari Ini</div><div class="kpi-value" id="kpiWo">0</div></div></div>
+        <div class="col-6 col-md-3"><div class="kpi-card"><div class="kpi-label">Total Wait List</div><div class="kpi-value" id="kpiWaitlist">0</div></div></div>
+        <div class="col-6 col-md-3"><div class="kpi-card"><div class="kpi-label">Total Tim Teknisi</div><div class="kpi-value" id="kpiTeam">0</div></div></div>
+        <div class="col-6 col-md-3"><div class="kpi-card"><div class="kpi-label">Rata-rata Load Teknisi</div><div class="kpi-value" id="kpiLoad">0</div></div></div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-lg-6">
+          <div class="panel-card">
+            <div class="panel-title">Distribusi Load WO Teknisi per Branch</div>
+            <canvas id="loadChart" height="220"></canvas>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="panel-card">
+            <div class="panel-title">Wait List per Branch</div>
+            <canvas id="waitlistChart" height="220"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">Tabel WO Instalasi Hari Ini</div>
+        <div id="woTable"></div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Wait List PSB</span>
+          <div class="btn-group btn-group-sm" role="group" id="wlTabs">
+            <button type="button" class="btn btn-outline-primary active" data-s="all">Semua</button>
+            <button type="button" class="btn btn-outline-primary" data-s="Menunggu Pembayaran">Menunggu Pembayaran</button>
+            <button type="button" class="btn btn-outline-primary" data-s="Menunggu Penjadwalan">Menunggu Penjadwalan</button>
+          </div>
+        </div>
+        <div id="wlTable"></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Modal Monitoring Tim -->
+<div class="modal fade" id="teamModal" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Monitoring Tim Teknisi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body"><div id="teamTable"></div></div>
+      <div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Detail WO -->
+<div class="modal fade" id="woModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title">Detail Pemasangan</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body"><div id="woDetailRows"></div></div>
+      <div class="modal-footer"><span class="text-muted small me-auto">Tampilan mengikuti halaman Detail Pemasangan existing ERP (read-only).</span><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../../assets/js/data.js"></script>
+<script src="../../assets/js/common.js"></script>
+<script>
+  window.BASE = "../../";
+  window.ACTIVE_MENU = "op-psb";
+</script>
+<script src="../../assets/js/layout.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  fillBranchSelect(document.getElementById("filterBranch"));
+
+  document.getElementById("kpiWo").textContent = WO_INSTALASI.length;
+  document.getElementById("kpiWaitlist").textContent = WAITLIST_PSB.length;
+  document.getElementById("kpiTeam").textContent = TEAM_MONITORING.length;
+  document.getElementById("kpiLoad").textContent = (WO_INSTALASI.length / TEAMS.length).toFixed(1);
+
+  const loadByBranch = BRANCHES.map(b => WO_INSTALASI.filter(w => w.branch === b).length);
+  new Chart(document.getElementById("loadChart"), {
+    type: "bar",
+    data: { labels: BRANCHES, datasets: [{ label: "Jumlah WO", data: loadByBranch, backgroundColor: "#2778c4" }] },
+    options: { plugins: { legend: { display:false } }, scales: { x: { ticks:{ autoSkip:false, maxRotation:60, minRotation:40 } } } }
+  });
+
+  const wlByBranch = BRANCHES.map(b => WAITLIST_PSB.filter(w => w.branch === b).length);
+  new Chart(document.getElementById("waitlistChart"), {
+    type: "bar",
+    data: { labels: BRANCHES, datasets: [{ label: "Wait List", data: wlByBranch, backgroundColor: "#f8bb86" }] },
+    options: { indexAxis: "y", plugins: { legend: { display:false } } }
+  });
+
+  let woFilters = { branch: "" };
+  function woFilterFn(r){ return !woFilters.branch || r.branch === woFilters.branch; }
+  const woTable = renderSimpleTable({
+    mountId: "woTable", data: WO_INSTALASI, filterFn: woFilterFn,
+    searchKeys: ["customer_name","pppoe_secret","team","sn"],
+    columns: [
+      {label:"Branch", key:"branch"}, {label:"PPPoE Secret", key:"pppoe_secret"},
+      {label:"Nama Customer", key:"customer_name"}, {label:"Team", key:"team"},
+      {label:"KaTIM", key:"katim"}, {label:"Access", key:"access"}, {label:"SN", key:"sn"},
+      {label:"Status", render:r=>badge(r.status)},
+      {label:"Aksi", render:r=>`<button class="btn btn-sm btn-outline-primary btn-wo-detail" data-id="${r.id}">Detail</button>`}
+    ]
+  });
+
+  let wlStatus = "all";
+  function wlFilterFn(r){ return (!woFilters.branch || r.branch === woFilters.branch) && (wlStatus === "all" || r.status === wlStatus); }
+  const wlTable = renderSimpleTable({
+    mountId: "wlTable", data: WAITLIST_PSB, filterFn: wlFilterFn,
+    searchKeys: ["customer_name","customer_id","alamat"],
+    columns: [
+      {label:"Branch", key:"branch"}, {label:"Nama Customer", key:"customer_name"},
+      {label:"ID Pelanggan", key:"customer_id"}, {label:"Paket", key:"package"},
+      {label:"Sales", key:"sales"}, {label:"Surveyor", key:"surveyor"}, {label:"Alamat", key:"alamat"},
+      {label:"Status", render:r=>badge(r.status)}
+    ]
+  });
+
+  document.getElementById("filterBranch").addEventListener("change", e => {
+    woFilters.branch = e.target.value;
+    woTable.setFilter(woFilterFn);
+    wlTable.setFilter(wlFilterFn);
+  });
+
+  document.getElementById("wlTabs").addEventListener("click", e => {
+    const btn = e.target.closest("button"); if(!btn) return;
+    document.querySelectorAll("#wlTabs button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    wlStatus = btn.dataset.s;
+    wlTable.setFilter(wlFilterFn);
+  });
+
+  document.getElementById("woTable").addEventListener("click", e => {
+    const btn = e.target.closest(".btn-wo-detail"); if(!btn) return;
+    const row = WO_INSTALASI.find(w => w.id == btn.dataset.id);
+    const rows = [["Branch",row.branch],["PPPoE Secret",row.pppoe_secret],["Nama Customer",row.customer_name],
+      ["Team",row.team],["KaTIM",row.katim],["Access",row.access],["Serial Number",row.sn],["Status WO",badge(row.status)]];
+    document.getElementById("woDetailRows").innerHTML = rows.map(r=>`<div class="detail-row"><div class="detail-label">${r[0]}</div><div class="detail-value">${r[1]}</div></div>`).join("");
+    new bootstrap.Modal(document.getElementById("woModal")).show();
+  });
+
+  renderSimpleTable({
+    mountId: "teamTable", data: TEAM_MONITORING, pageSize: 10,
+    searchKeys: ["team_name","lead_name","branch"],
+    columns: [
+      {label:"Branch", key:"branch"}, {label:"Nama Team", key:"team_name"},
+      {label:"Lead NIP", key:"lead_nip"}, {label:"Nama Lead", key:"lead_name"},
+      {label:"Lead Status", render:r=>badge(r.lead_status)}, {label:"Team Status", render:r=>badge(r.team_status)}
+    ]
+  });
+});
+</script>
+</body>
+</html>

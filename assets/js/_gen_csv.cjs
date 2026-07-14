@@ -61,6 +61,34 @@ const WO_TSO=[];
   }
 })();
 
+const WAITLIST_TSO=[];
+(function(){
+  for(let i=0;i<12;i++){
+    WAITLIST_TSO.push({id:i+1,branch:pick(BRANCHES,i+2),pppoe_secret:"cust"+String(3500+i),customer_name:pick(CUSTOMER_NAMES,i+3)+" "+(i+1),type:pick(["Reguler","Garansi"],i),waktu_komplain:"2026-07-13 "+pad(8+i%8)+":00",waktu_eskalasi:"2026-07-13 "+pad(9+i%8)+":30",access:"P-"+(4+(i%10)),port_access:"Port "+(1+(i%8)),status:pick(["Menunggu Pembayaran","Menunggu Penjadwalan"],i)});
+  }
+})();
+
+const HISTORI_TSO=[];
+(function(){
+  for(let i=0;i<15;i++){
+    HISTORI_TSO.push({id:i+1,branch:pick(BRANCHES,i+4),customer_name:pick(CUSTOMER_NAMES,i+5)+" "+(i+1),pppoe_secret:"cust"+String(3600+i),type:pick(["Garansi","Reguler"],i),tanggal_jadwal:randDate(i%6),team_katim:pick(TEAMS,i)+" / "+pick(["Rudi","Sani","Wawan"],i),access:"P-"+(5+(i%10)),port_access:"Port "+(2+(i%8)),status:"Selesai"});
+  }
+})();
+
+const WO_DISTRIBUTION=[];
+(function(){
+  for(let i=0;i<16;i++){
+    WO_DISTRIBUTION.push({id:i+1,branch:pick(BRANCHES,i),area:"AR-"+String(1+i%10).padStart(3,"0"),type_splitter:pick(["1:8","1:16"],i),kode:"SPL-"+String(100+i),katim:"Katim "+pick(["Rudi","Sani","Wawan"],i),tanggal:randDate(i%5),phase:pick(["Instalasi","Penyambungan","Testing"],i),status:pick(["Dalam Proses","Selesai","Pending"],i)});
+  }
+})();
+
+const WAITLIST_DISTRIBUTION=[];
+(function(){
+  for(let i=0;i<10;i++){
+    WAITLIST_DISTRIBUTION.push({id:i+1,area:"AR-"+String(11+i%5).padStart(3,"0"),placement:"Tiang "+pick(["A","B","C"],i)+"-"+(10+i*2),type_splitter:pick(["1:8","1:16"],i),kode:"SPL-"+String(200+i)});
+  }
+})();
+
 const WO_DISMANTLE=[];
 (function(){
   for(let i=0;i<20;i++){
@@ -93,7 +121,7 @@ function toCSV(arr){
 const DATA_DIR=path.join(__dirname,"..","data");
 if(!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR,{recursive:true});
 
-const sets={branches:BRANCHES.map(v=>({name:v})),packages:PACKAGES.map(v=>({name:v})),teams:TEAMS.map(v=>({name:v})),areas:AREA_DATA,area_targets:AREA_TARGET,customers:CUSTOMER_DATA,wo_instalasi:WO_INSTALASI,waitlist_psb:WAITLIST_PSB,team_monitoring:TEAM_MONITORING,wo_tso:WO_TSO,wo_dismantle:WO_DISMANTLE,histori_dismantle:HISTORI_DISMANTLE,ae_data:AE_DATA};
+const sets={branches:BRANCHES.map(v=>({name:v})),packages:PACKAGES.map(v=>({name:v})),teams:TEAMS.map(v=>({name:v})),areas:AREA_DATA,area_targets:AREA_TARGET,customers:CUSTOMER_DATA,wo_instalasi:WO_INSTALASI,waitlist_psb:WAITLIST_PSB,team_monitoring:TEAM_MONITORING,wo_tso:WO_TSO,waitlist_tso:WAITLIST_TSO,histori_tso:HISTORI_TSO,wo_distribution:WO_DISTRIBUTION,waitlist_distribution:WAITLIST_DISTRIBUTION,wo_dismantle:WO_DISMANTLE,histori_dismantle:HISTORI_DISMANTLE,ae_data:AE_DATA};
 Object.entries(sets).forEach(([name,data])=>{
   fs.writeFileSync(path.join(DATA_DIR,name+".csv"),toCSV(data),"utf8");
   console.log("Wrote "+name+".csv ("+data.length+" rows)");

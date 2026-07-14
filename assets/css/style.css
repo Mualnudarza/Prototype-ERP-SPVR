@@ -112,3 +112,7 @@ table.table td{ vertical-align:middle; font-size:.9rem; }
 }
 .kpi-card.mono .kpi-label { color: rgba(255,255,255,.65); }
 .kpi-card.mono .kpi-value { color: #fff; }
+
+.ops-tabs{ display:flex; gap:.5rem; flex-wrap:wrap; }
+.ops-tab{ border:1px solid #212529; background:#fff; color:#212529; padding:.6rem 1rem; border-radius:999px; font-weight:600; }
+.ops-tab.active{ background:#212529; color:#fff; }

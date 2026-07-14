@@ -51,10 +51,7 @@ function renderLayout() {
                 ${heading("Sales")}
                 ${item("pages/sales/retention.html", "sales-retention", "users", "Customer Retention")}
                 ${heading("Operational &amp; Technical")}
-                ${item("pages/operational/psb.html", "op-psb", "chevrons-right", "PSB / Instalasi")}
-                ${item("pages/operational/issue-tso.html", "op-issue", "tool", "Issue &amp; TSO")}
-                ${item("pages/operational/infrastruktur.html", "op-infra", "layers", "Monitoring Infrastruktur")}
-                ${item("pages/operational/dismantle.html", "op-dismantle", "check-circle", "Monitoring Dismantle")}
+                ${item("pages/operational/psb.html", "op-psb", "chevrons-right", "Modul Operasional &amp; Teknis")}
                 ${heading("Man Power Planning")}
                 ${item("pages/manpower/ae.html", "mpp-ae", "user-check", "Account Executive")}
                 ${item("pages/manpower/tim-teknisi.html", "mpp-team", "users", "Tim Teknisi")}

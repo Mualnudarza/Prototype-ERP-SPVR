@@ -77,6 +77,10 @@
   w.WAITLIST_PSB = typed('waitlist_psb', ['id']);
   w.TEAM_MONITORING = typed('team_monitoring', []);
   w.WO_TSO = typed('wo_tso', ['id']);
+  w.WAITLIST_TSO = typed('waitlist_tso', ['id']);
+  w.HISTORI_TSO = typed('histori_tso', ['id']);
+  w.WO_DISTRIBUTION = typed('wo_distribution', ['id']);
+  w.WAITLIST_DISTRIBUTION = typed('waitlist_distribution', ['id']);
   w.WO_DISMANTLE = typed('wo_dismantle', ['id']);
   w.HISTORI_DISMANTLE = typed('histori_dismantle', ['id']);
   w.AE_DATA = typed('ae_data', []);

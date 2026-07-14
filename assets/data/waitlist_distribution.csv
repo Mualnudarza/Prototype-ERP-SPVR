@@ -1,0 +1,11 @@
+id,area,placement,type_splitter,kode
+1,AR-011,Tiang A-10,1:8,SPL-200
+2,AR-012,Tiang B-12,1:16,SPL-201
+3,AR-013,Tiang C-14,1:8,SPL-202
+4,AR-014,Tiang A-16,1:16,SPL-203
+5,AR-015,Tiang B-18,1:8,SPL-204
+6,AR-011,Tiang C-20,1:16,SPL-205
+7,AR-012,Tiang A-22,1:8,SPL-206
+8,AR-013,Tiang B-24,1:16,SPL-207
+9,AR-014,Tiang C-26,1:8,SPL-208
+10,AR-015,Tiang A-28,1:16,SPL-209

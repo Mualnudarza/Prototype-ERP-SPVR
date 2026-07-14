@@ -122,4 +122,5 @@ table.table td{ vertical-align:middle; font-size:.9rem; }
 .ops-tab.active{
   background:linear-gradient(135deg,#212529 0%,#495057 100%);
   color:#fff; border-color:transparent;
+  box-shadow:none;
 }

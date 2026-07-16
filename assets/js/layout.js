@@ -53,8 +53,7 @@ function renderLayout() {
                 ${heading("Operational &amp; Technical")}
                 ${item("pages/operational/psb.html", "op-psb", "chevrons-right", "Modul Operasional &amp; Teknis")}
                 ${heading("Man Power Planning")}
-                ${item("pages/manpower/ae.html", "mpp-ae", "user-check", "Account Executive")}
-                ${item("pages/manpower/tim-teknisi.html", "mpp-team", "users", "Tim Teknisi")}
+                ${item("pages/manpower/mpp.html", "mpp-main", "users", "Modul Man Power Planning")}
             </ul>
         </div>
     </nav>`;

@@ -5,15 +5,18 @@ const BRANCHES = ["Temas","Bumiaji","Dau"];
 const CUSTOMER_NAMES = ["Ahmad Fauzi","Budi Santoso","Rina Wijaya","Sinta Dewi","Agus Prasetyo","Maya Sari","Doni Kurniawan","Lestari Putri","Hendra Gunawan","Wulan Sari","Bayu Aditya","Citra Ayu"];
 const PACKAGES = ["Home 10 Mbps","Home 20 Mbps","Home 30 Mbps","Home 50 Mbps","Bisnis 50 Mbps"];
 const TEAMS = ["Team Alpha","Team Bravo","Team Charlie","Team Delta","Team Echo"];
+const AE_NAMES = ["Andi Wijaya","Yusuf Bahtiar","Farida Amelia","Nia Kartika","Rahmat Hidayat","Putri Ayu","Reza Pratama","Dewi Lestari"];
+
+const AREA_NAMES = ["PAPA","ORMO","BSUL","ETIK","LOCA","LAJA","SURA","KRBT","MABA","RITI","GADA","FABO","DAMA","LAHO","GOJO"];
 
 function pick(arr,i){ return arr[i % arr.length]; }
 function pad(n){ return n<10?"0"+n:""+n; }
 function randDate(sm){ return pad(1+(sm*7)%28)+"-"+pick(["Jan","Feb","Mar","Apr","May","Jun"],sm)+"-26"; }
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
-// AREA_DATA
 const AREA_DATA=[];
 (function(){
-  const names=["PAPA","ORMO","BSUL","ETIK","LOCA","LAJA","SURA","KRBT","MABA","RITI","GADA","FABO","DAMA","LAHO","GOJO"];
+  const names=AREA_NAMES;
   let id=1;
   names.forEach((n,idx)=>{
     const br=pick(BRANCHES,idx), pid=id++;
@@ -31,6 +34,10 @@ const CUSTOMER_DATA=[];
     const st=pick(["Aktif","Isolir","Terminate"],i%5===0?1:(i%7===0?2:0));
     CUSTOMER_DATA.push({id:i+1,branch:br,customer_name:pick(CUSTOMER_NAMES,i)+" "+(i+1),phone:"0812"+String(30000000+i*137).slice(0,8),package:pick(PACKAGES,i),pppoe_secret:"cust"+String(1000+i),subscribe_date:randDate(i%6),expired_date:randDate((i+3)%6),status:st});
   }
+  for(let i=0;i<15;i++){
+    const br=pick(BRANCHES,i);
+    CUSTOMER_DATA.push({id:CUSTOMER_DATA.length+1,branch:br,customer_name:"Fasum "+pick(AREA_NAMES,i)+" "+(i+1),phone:"0812"+String(35000000+i*137).slice(0,8),package:pick(PACKAGES,i),pppoe_secret:"fasum"+String(100+i),subscribe_date:randDate(i%6),expired_date:randDate((i+3)%6),status:"Fasum"});
+  }
 })();
 
 const WO_INSTALASI=[];
@@ -43,13 +50,13 @@ const WO_INSTALASI=[];
 const WAITLIST_PSB=[];
 (function(){
   for(let i=0;i<18;i++){
-    WAITLIST_PSB.push({id:i+1,branch:pick(BRANCHES,i+2),customer_name:pick(CUSTOMER_NAMES,i+4)+" "+(i+1),customer_id:"CUST"+String(9000+i),package:pick(PACKAGES,i+1),sales:pick(["Andi","Yusuf","Farida","Nia","Rahmat"],i),surveyor:pick(["Bagus","Irwan","Dwi","Fitri"],i),alamat:"Jl. Merdeka No. "+(i+1)+", "+pick(BRANCHES,i+2),status:pick(["Menunggu Pembayaran","Menunggu Penjadwalan"],i)});
+    WAITLIST_PSB.push({id:i+1,branch:pick(BRANCHES,i+2),customer_name:pick(CUSTOMER_NAMES,i+4)+" "+(i+1),customer_id:"CUST"+String(9000+i),package:pick(PACKAGES,i+1),sales:pick(AE_NAMES,i),surveyor:pick(["Bagus","Irwan","Dwi","Fitri"],i),alamat:"Jl. Merdeka No. "+(i+1)+", "+pick(BRANCHES,i+2),status:pick(["Menunggu Pembayaran","Menunggu Penjadwalan"],i)});
   }
 })();
 
 const TEAM_MONITORING=[];
 (function(){
-  TEAMS.forEach((t,idx)=>{ BRANCHES.slice(0,6).forEach((b,j)=>{
+  TEAMS.forEach((t,idx)=>{ BRANCHES.forEach((b,j)=>{
     TEAM_MONITORING.push({branch:b,team_name:t+" - "+b.slice(0,3).toUpperCase(),lead_nip:"NIP"+String(70000+idx*100+j),lead_name:pick(["Rudi Hartono","Sani Wijaya","Wawan Setiawan","Doni Saputra","Eko Purnomo"],idx),lead_status:pick(["Pegawai","Training","Off"],(idx+j)%5===0?2:(idx+j)%4===0?1:0),team_status:pick(["Aktif","Non Aktif"],(idx+j)%6===0?1:0)});
   })});
 })();
@@ -84,31 +91,41 @@ const WO_DISTRIBUTION=[];
 
 const WAITLIST_DISTRIBUTION=[];
 (function(){
+  const areasPerBranch = {};
+  AREA_DATA.filter(a => a.is_primary === 1).forEach(area => {
+    if (!areasPerBranch[area.branch]) areasPerBranch[area.branch] = [];
+    areasPerBranch[area.branch].push(area.area_code);
+  });
+
   for(let i=0;i<10;i++){
-    WAITLIST_DISTRIBUTION.push({id:i+1,area:"AR-"+String(11+i%5).padStart(3,"0"),placement:"Tiang "+pick(["A","B","C"],i)+"-"+(10+i*2),type_splitter:pick(["1:8","1:16"],i),kode:"SPL-"+String(200+i)});
+    const br = pick(BRANCHES,i);
+    const area_code = pick(areasPerBranch[br], i%areasPerBranch[br].length);
+    WAITLIST_DISTRIBUTION.push({id:i+1,branch:br,area:area_code,placement:"Tiang "+pick(["A","B","C"],i)+"-"+(10+i*2),type_splitter:pick(["1:8","1:16"],i),kode:"SPL-"+String(200+i)});
   }
 })();
 
 const WO_DISMANTLE=[];
 (function(){
   for(let i=0;i<20;i++){
-    WO_DISMANTLE.push({id:i+1,branch:pick(BRANCHES,i+3),customer_name:pick(CUSTOMER_NAMES,i+8)+" "+(i+1),pppoe_secret:"cust"+String(4000+i),phone:"0813"+String(40000000+i*211).slice(0,8),sales:pick(["Andi","Yusuf","Farida","Nia"],i),terminator:pick(["Bagus","Irwan","Dwi"],i),alamat:"Jl. Diponegoro No. "+(i+2)+", "+pick(BRANCHES,i+3),expired_date:randDate(i%6),pickup_suggestion:randDate((i+1)%6),status:pick(["Menunggu Penjadwalan","Terjadwal Hari Ini","Selesai"],i)});
+    WO_DISMANTLE.push({id:i+1,branch:pick(BRANCHES,i+3),customer_name:pick(CUSTOMER_NAMES,i+8)+" "+(i+1),pppoe_secret:"cust"+String(4000+i),phone:"0813"+String(40000000+i*211).slice(0,8),sales:pick(AE_NAMES,i),terminator:pick(["Bagus","Irwan","Dwi"],i),alamat:"Jl. Diponegoro No. "+(i+2)+", "+pick(BRANCHES,i+3),expired_date:randDate(i%6),pickup_suggestion:randDate((i+1)%6),status:pick(["Menunggu Penjadwalan","Terjadwal Hari Ini","Selesai"],i)});
   }
 })();
 
 const HISTORI_DISMANTLE=[];
 (function(){
   for(let i=0;i<15;i++){
-    HISTORI_DISMANTLE.push({id:i+1,branch:pick(BRANCHES,i+5),customer_name:pick(CUSTOMER_NAMES,i+10)+" "+(i+1),pppoe_secret:"cust"+String(5000+i),phone:"0813"+String(50000000+i*173).slice(0,8),sales:pick(["Andi","Yusuf","Farida"],i),terminator:pick(["Bagus","Irwan","Dwi"],i),finish_date:randDate(i%6),result:pick(["Perangkat Kembali Lengkap","Perangkat Sebagian","Tidak Ditemukan"],i%5===0?2:(i%3===0?1:0))});
+    HISTORI_DISMANTLE.push({id:i+1,branch:pick(BRANCHES,i+5),customer_name:pick(CUSTOMER_NAMES,i+10)+" "+(i+1),pppoe_secret:"cust"+String(5000+i),phone:"0813"+String(50000000+i*173).slice(0,8),sales:pick(AE_NAMES,i),terminator:pick(["Bagus","Irwan","Dwi"],i),finish_date:randDate(i%6),result:pick(["Perangkat Kembali Lengkap","Perangkat Sebagian","Tidak Ditemukan"],i%5===0?2:(i%3===0?1:0))});
   }
 })();
 
 const AE_DATA=[];
 (function(){
-  const names=["Andi Wijaya","Yusuf Bahtiar","Farida Amelia","Nia Kartika","Rahmat Hidayat","Putri Ayu","Reza Pratama","Dewi Lestari"];
-  BRANCHES.forEach((b,idx)=>{ const c=2+(idx%3); for(let j=0;j<c;j++){
-    AE_DATA.push({branch:b,nip:"AE"+String(8000+idx*10+j),fullname:pick(names,idx+j),nickname:pick(names,idx+j).split(" ")[0],phone:"0821"+String(60000000+idx*97+j*13).slice(0,8),status:(idx+j)%7===0?"Non Aktif":"Aktif"});
-  }});
+  BRANCHES.forEach((b,idx)=>{
+    const c=randInt(4,6);
+    for(let j=0;j<c;j++){
+      AE_DATA.push({branch:b,nip:"AE"+String(8000+idx*10+j),fullname:pick(AE_NAMES,idx+j),nickname:pick(AE_NAMES,idx+j).split(" ")[0],phone:"0821"+String(60000000+idx*97+j*13).slice(0,8),status:(idx+j)%7===0?"Non Aktif":"Aktif"});
+    }
+  });
 })();
 
 function toCSV(arr){

@@ -72,10 +72,23 @@
 <script src="../../assets/js/layout.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  fillBranchSelect(document.getElementById("filterBranch"));
-  document.getElementById("kpiUnconfig").textContent = 18;
-  document.getElementById("kpiProgress").textContent = "64%";
-  document.getElementById("kpiReady").textContent = 42;
+  const filterBranch = document.getElementById("filterBranch");
+  fillBranchSelect(filterBranch);
+
+  function updateKpi(){
+    const branch = filterBranch.value;
+    const waitlist = WAITLIST_DISTRIBUTION.filter(r => !branch || r.branch === branch);
+    const wo = WO_DISTRIBUTION.filter(r => !branch || r.branch === branch);
+    const done = wo.filter(r => r.status === "Selesai").length;
+    const progress = wo.filter(r => r.status === "Dalam Proses").length;
+    const total = wo.length + waitlist.length;
+    document.getElementById("kpiUnconfig").textContent = waitlist.length;
+    document.getElementById("kpiProgress").textContent = total ? Math.round((progress / total) * 100) + "%" : "0%";
+    document.getElementById("kpiReady").textContent = done;
+  }
+
+  filterBranch.addEventListener("change", updateKpi);
+  updateKpi();
 
   const cards = [
     { name:"Monitor ODP", icon:'<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>', desc:"Monitoring status ODP regional." },

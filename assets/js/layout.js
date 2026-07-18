@@ -1,11 +1,3 @@
-/* =========================================================
-   ERP SPVR - SHARED LAYOUT (Navbar + Sidebar)
-   Mengikuti struktur & style navbar/sidebar template ERP asli.
-   Setiap halaman cukup menset:
-     window.BASE        -> path relatif ke root ("" atau "../../")
-     window.ACTIVE_MENU  -> key menu yang sedang aktif
-   ========================================================= */
-
 function renderLayout() {
   const BASE = window.BASE || "";
   const ACTIVE = window.ACTIVE_MENU || "";
@@ -13,18 +5,19 @@ function renderLayout() {
   const isActive = (key) => (ACTIVE === key ? "active" : "");
 
   const navbarHtml = `
-    <header class="navbar navbar-dark sticky-top bg-dark shadow px-3 d-flex justify-content-between align-items-center">
-        <a class="navbar-brand fw-bold mb-0 ms-2" href="${BASE}index.html" style="background:none;">
-            GriyaNet - Hei, SPVR
+    <header class="navbar navbar-dark sticky-top shadow px-3 d-flex justify-content-between align-items-center" style="background:#1a1a2e;">
+        <a class="navbar-brand fw-bold mb-0 ms-2" href="${BASE}index.html">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+            GriyaNet SPVR
         </a>
-        <button class="navbar-toggler d-md-none small-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+        <button class="navbar-toggler d-md-none small-toggle border-0" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" style="color:rgba(255,255,255,.7);">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="bg-dark py-1 px-2 header-scroll">
-            <span class="mode-dev">MODE PROTOTYPE - Supervisor Regional</span>
+        <div class="d-flex align-items-center gap-2 header-scroll">
+            <span class="mode-dev">PROTOTYPE - Supervisor Regional</span>
             <a href="#" class="menu-link active">Regional Malang Raya</a>
             <button type="button" class="logout-btn" disabled title="Non-fungsional pada prototype">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out me-1"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Logout
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Logout
             </button>
         </div>
     </header>`;
@@ -32,55 +25,40 @@ function renderLayout() {
   const item = (href, key, icon, label) => `
     <li class="nav-item">
         <a href="${BASE}${href}" class="nav-link ${isActive(key)}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-${icon}" aria-hidden="true">${ICONS[icon] || ""}</svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[icon] || ""}</svg>
             ${label}
         </a>
     </li>`;
 
   const heading = (label) => `
-    <div class="border-bottom my-2"></div>
-    <h6 class="sidebar-heading px-3 mt-2 mb-1 text-muted">${label}</h6>`;
+    <h6 class="sidebar-heading">${label}</h6>`;
 
   const sidebarHtml = `
     <nav id="sidebarMenu" class="col-md-2 col-lg-2 d-md-block sidebar collapse sidebar-admin">
-        <div class="position-sticky">
-            <ul class="nav flex-column">
-                ${item("index.html", "dashboard", "home", "Dashboard")}
-                ${heading("Area")}
-                ${item("pages/area/open-area.html", "area-open", "map", "Open Area &amp; Overlay")}
-                ${heading("Sales")}
-                <div class="ms-3">
-                  ${item("pages/sales/retention.html", "sales-retention", "users", "Customer Isolir & Terminate")}
-                  ${item("pages/sales/customer-aktif.html", "sales-customer-aktif", "star", "Customer Aktif & Fasum")}
-                </div>
-                ${heading("Operational &amp; Technical")}
-                ${item("pages/operational/psb.html", "op-psb", "chevrons-right", "Modul Operasional &amp; Teknis")}
-                ${heading("Monitoring Infrastruktur")}
-                <div class="ms-3">
-                  ${item("pages/infra-monitoring/monitor-odp.html", "infra-monitoring-odp", "monitor", "Monitor ODP")}
-                  ${item("pages/infra-monitoring/list-area-splitter.html", "infra-monitoring-splitter-area", "list", "List Area Splitter")}
-                  ${item("pages/infra-monitoring/splitter-no-config.html", "infra-monitoring-splitter-noconfig", "settings", "Splitter No Config")}
-                  ${item("pages/infra-monitoring/progress-konfigurasi.html", "infra-monitoring-progress", "activity", "Progress Konfigurasi")}
-                  ${item("pages/infra-monitoring/map-access.html", "infra-monitoring-map-access", "map", "Map Access")}
-                </div>
-                ${heading("Implementasi Asset")}
-                <div class="ms-3">
-                  ${item("pages/asset-monitoring/perangkat.html", "asset-perangkat", "cpu", "Monitoring Perangkat")}
-                  ${item("pages/asset-monitoring/kabel.html", "asset-kabel", "zap", "Monitoring Kabel")}
-                  ${item("pages/asset-monitoring/modem.html", "asset-modem", "box", "Monitoring Modem")}
-                </div>
-                ${heading("Man Power Planning")}
-                ${item("pages/manpower/mpp.html", "mpp-main", "users", "Modul Man Power Planning")}
-            </ul>
-        </div>
+        <ul class="nav flex-column">
+            ${item("index.html", "dashboard", "home", "Dashboard")}
+            ${heading("Area")}
+            ${item("pages/area/open-area.html", "area-open", "map", "Coverage Area")}
+            ${heading("Sales")}
+            ${item("pages/sales/retention.html", "sales-retention", "users", "Customer Isolir & Terminate")}
+            ${item("pages/sales/customer-aktif.html", "sales-customer-aktif", "star", "Customer Aktif & Fasum")}
+            ${heading("Operational & Technical")}
+            ${item("pages/operational/psb.html", "op-psb", "chevrons-right", "Modul Operasional & Teknis")}
+            ${heading("Monitoring Infrastruktur")}
+            ${item("pages/infra-monitoring/monitor-odp.html", "infra-monitoring-odp", "monitor", "Monitor ODP")}
+            ${item("pages/infra-monitoring/list-area-splitter.html", "infra-monitoring-splitter-area", "list", "List Area Splitter")}
+            ${item("pages/infra-monitoring/splitter-no-config.html", "infra-monitoring-splitter-noconfig", "settings", "Splitter No Config")}
+            ${item("pages/infra-monitoring/progress-konfigurasi.html", "infra-monitoring-progress", "activity", "Progress Konfigurasi")}
+            ${item("pages/infra-monitoring/map-access.html", "infra-monitoring-map-access", "map", "Map Access")}
+            ${heading("Implementasi Asset")}
+            ${item("pages/asset-monitoring/perangkat.html", "asset-perangkat", "cpu", "Monitoring Perangkat")}
+            ${item("pages/asset-monitoring/kabel.html", "asset-kabel", "zap", "Monitoring Kabel")}
+            ${item("pages/asset-monitoring/modem.html", "asset-modem", "box", "Monitoring Modem")}
+            ${heading("Man Power Planning")}
+            ${item("pages/manpower/mpp.html", "mpp-main", "users", "Modul Man Power Planning")}
+        </ul>
     </nav>`;
 
-  // IMPORTANT: use outerHTML (not innerHTML) so the real elements with the
-  // Bootstrap column classes (col-md-2, etc.) become direct children of
-  // .row. If we only injected innerHTML into the placeholder <div>, the
-  // wrapper <div> itself (which has no column class) would be the flex
-  // item, causing the sidebar/main content to stack instead of sitting
-  // side-by-side.
   const navbarEl = document.getElementById("app-navbar");
   const sidebarEl = document.getElementById("app-sidebar");
   if (navbarEl) navbarEl.outerHTML = navbarHtml;

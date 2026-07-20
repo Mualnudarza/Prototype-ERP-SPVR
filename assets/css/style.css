@@ -112,7 +112,104 @@ header.navbar .logout-btn {
   cursor: not-allowed;
 }
 
-/* ---- Sidebar ---- */
+/* ---- Role toggle group ---- */
+.role-toggle-group {
+  display: flex;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--st-radius-sm);
+  padding: 2px;
+}
+.role-btn {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: .8125rem;
+  padding: .25rem .75rem;
+  border-radius: var(--st-radius-sm);
+  transition: all 0.2s;
+  background: transparent;
+}
+.role-btn.active {
+  background: var(--st-primary);
+  color: #fff;
+  font-weight: 500;
+  box-shadow: var(--st-shadow-light);
+}
+.role-btn:not(.active):hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ---- Chart panels ---- */
+.bar-chart-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.growth-svg {
+  display: block;
+}
+.growth-svg .grid-x {
+  stroke: #e5e7eb;
+  stroke-width: 1;
+  stroke-dasharray: 3,3;
+}
+.growth-svg .axis-label {
+  font-size: 10px;
+  fill: #6b7280;
+}
+.growth-svg .axis-title {
+  font-size: 10px;
+  fill: #374151;
+  font-weight: 600;
+}
+.growth-svg .bar-val-label {
+  font-size: 11px;
+  font-weight: 600;
+  fill: #1a1a2e;
+}
+.line-chart-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+}
+.line-chart-panel svg,
+.closing-svg {
+  width: 100%;
+  max-height: 210px;
+  display: block;
+}
+.closing-svg polyline {
+  fill: none;
+  stroke: var(--st-primary);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.closing-svg circle { fill: var(--st-primary); }
+.closing-svg .closing-area {
+  fill: #2778c4;
+  fill-opacity: 0.08;
+}
+.closing-svg .grid-x,
+.closing-svg .grid-y {
+  stroke: #e5e7eb;
+  stroke-width: 1;
+}
+.closing-svg .grid-y { stroke-dasharray: 3,3; }
+.closing-svg .axis-label {
+  font-size: 9px;
+  fill: #6b7280;
+}
+.closing-svg .axis-title {
+  font-size: 10px;
+  fill: #374151;
+  font-weight: 600;
+}
+.closing-svg circle { fill: var(--st-primary); }
 .sidebar-admin {
   background: var(--st-surface);
   border-right: 1px solid var(--st-border);

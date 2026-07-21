@@ -1,15 +1,10 @@
 function renderLayout() {
   const BASE = window.BASE || "";
   const ACTIVE = window.ACTIVE_MENU || "";
-  const isBL = window.ROLE_VIEW === "bl";
 
   const isActive = (key) => (ACTIVE === key ? "active" : "");
 
-  const spvrToggleClass = !isBL ? "role-btn active" : "role-btn";
-  const blToggleClass   = isBL  ? "role-btn active" : "role-btn";
-
   const spvrHref = BASE + "index.html";
-  const blHref   = BASE + "pages/branch-leader/analytics.html";
 
   const navbarHtml = `
     <header class="navbar navbar-dark sticky-top shadow px-3 d-flex justify-content-between align-items-center" style="background:#1a1a2e;">
@@ -21,9 +16,9 @@ function renderLayout() {
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="d-flex align-items-center gap-2 header-scroll">
-            <div class="role-toggle-group">
-                <a href="${spvrHref}" class="${spvrToggleClass}">Supervisor Regional</a>
-                <a href="${blHref}" class="${blToggleClass}">Branch Leader</a>
+            <div class="branch-filter-group d-flex align-items-center gap-1">
+                <label class="form-label mb-0 small text-white" for="globalBranchFilter">Branch</label>
+                <select id="globalBranchFilter" class="form-select form-select-sm" style="width:auto;min-width:160px;"></select>
             </div>
             <button type="button" class="logout-btn" disabled title="Non-fungsional pada prototype">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Logout
@@ -48,6 +43,7 @@ function renderLayout() {
             ${item("index.html", "dashboard", "home", "Dashboard")}
             ${heading("Area")}
             ${item("pages/area/open-area.html", "area-open", "map", "Coverage Area")}
+            ${item("pages/area/analisa-area-branch.html", "area-analisa-branch", "bar-chart", "Analisa Area Branch")}
             ${heading("Sales")}
             ${item("pages/sales/retention.html", "sales-retention", "users", "Customer Isolir & Terminate")}
             ${item("pages/sales/customer-aktif.html", "sales-customer-aktif", "star", "Customer Aktif & Fasum")}
@@ -68,17 +64,19 @@ function renderLayout() {
         </ul>
     </nav>`;
 
-  const blSidebar = `
-    <nav id="sidebarMenu" class="col-md-2 col-lg-2 d-md-block sidebar collapse sidebar-admin">
-        <ul class="nav flex-column">
-            ${item("pages/branch-leader/analytics.html", "bl-analytics", "bar-chart", "Analisa Branch")}
-        </ul>
-    </nav>`;
-
   const navbarEl = document.getElementById("app-navbar");
   const sidebarEl = document.getElementById("app-sidebar");
   if (navbarEl) navbarEl.outerHTML = navbarHtml;
-  if (sidebarEl) sidebarEl.outerHTML = isBL ? blSidebar : spvrSidebar;
+  if (sidebarEl) sidebarEl.outerHTML = spvrSidebar;
+
+  const globalBranchFilter = document.getElementById("globalBranchFilter");
+  if (globalBranchFilter) {
+    fillBranchSelect(globalBranchFilter);
+    globalBranchFilter.value = getGlobalBranch();
+    globalBranchFilter.addEventListener("change", (e) => {
+      setGlobalBranch(e.target.value);
+    });
+  }
 }
 
 const ICONS = {

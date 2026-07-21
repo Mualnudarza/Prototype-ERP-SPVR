@@ -28,10 +28,7 @@
 
       <div class="filter-bar">
         <div class="row g-2 align-items-end">
-          <div class="col-6 col-md-3">
-            <label>Branch</label>
-            <select id="filterBranch" class="form-select form-select-sm"></select>
-          </div>
+
           <div class="col-6 col-md-2">
             <label>Bulan</label>
             <select id="filterBulan" class="form-select form-select-sm"></select>
@@ -108,8 +105,6 @@
 <script src="../../assets/js/layout.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  fillBranchSelect(document.getElementById("filterBranch"));
-
   const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const fullNames = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
   const currentMonthIdx = new Date().getMonth();
@@ -120,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentType = "all";
 
   function getFilteredAreas() {
-    const branch = document.getElementById("filterBranch").value;
+    const branch = getGlobalBranch();
     const monthIdx = parseInt(filterBulan.value, 10);
     const year = document.getElementById("filterTahun").value;
     const monthStr = monthNames[monthIdx];
@@ -134,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function getAllByBranch() {
-    const branch = document.getElementById("filterBranch").value;
+    const branch = getGlobalBranch();
     return branch ? AREA_DATA.filter(a => a.branch === branch) : AREA_DATA;
   }
 
@@ -178,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
     table.setFilter(r => {
       if (currentType === "primary" && r.is_primary !== 1) return false;
       if (currentType === "overlay" && r.is_primary !== 0) return false;
-      const branch = document.getElementById("filterBranch").value;
+      const branch = getGlobalBranch();
       if (branch && r.branch !== branch) return false;
       const monthIdx = parseInt(filterBulan.value, 10);
       const year = document.getElementById("filterTahun").value;
@@ -204,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ]
   });
 
-  document.getElementById("filterBranch").addEventListener("change", updateDashboard);
+  window.addEventListener("globalBranchChange", updateDashboard);
   document.getElementById("filterBulan").addEventListener("change", updateDashboard);
   document.getElementById("filterTahun").addEventListener("input", updateDashboard);
 

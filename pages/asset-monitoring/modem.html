@@ -25,14 +25,7 @@
         <p class="page-description">Monitoring kondisi aset modem di seluruh branch regional (read-only).</p>
       </div>
 
-      <div class="filter-bar mb-3">
-        <div class="row g-2 align-items-end">
-          <div class="col-6 col-md-3">
-            <label>Branch</label>
-            <select id="filterBranch" class="form-select form-select-sm"></select>
-          </div>
-        </div>
-      </div>
+
 
       <div class="panel-card mb-3">
         <div class="panel-title">Menu Monitoring Modem</div>
@@ -194,8 +187,7 @@
 <script src="../../assets/js/layout.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const filterBranch = document.getElementById("filterBranch");
-  fillBranchSelect(filterBranch);
+  const branchFilter = getGlobalBranch();
 
   const MOCK_DATA_MODEM = (typeof MODEM !== 'undefined' && MODEM.length > 0) ? MODEM : [
     { branch: "Temas", kode_ref: "MOD-001", supplier: "Huawei", brand: "HG8245H5", type: "ONT", serial_number: "SN123456789", harga: 350000, purchase_date: "2026-01-15" },
@@ -308,7 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function updateKPIs() {
-    const branch = filterBranch.value;
+    const branch = getGlobalBranch();
     const filteredDataModem = MOCK_DATA_MODEM.filter(r => !branch || r.branch === branch);
     const filteredReplaceModem = MOCK_REPLACE_MODEM.filter(r => !branch || r.branch === branch);
     const filteredTerminateModem = MOCK_MODEM_TERMINATE.filter(r => !branch || r.branch === branch);
@@ -345,7 +337,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const activeCard = document.querySelector(`#modemCardMenu .card-menu[data-view="${currentView}"]`);
     if (activeCard) activeCard.classList.add("border-primary");
 
-    const branch = filterBranch.value;
+    const branch = getGlobalBranch();
     const filterFn = r => !branch || r.branch === branch;
 
     switch (currentView) {
@@ -383,7 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  filterBranch.addEventListener("change", renderView);
+  window.addEventListener("globalBranchChange", renderView);
   renderView();
 });
 </script>

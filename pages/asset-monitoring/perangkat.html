@@ -25,14 +25,7 @@
         <p class="page-description">Monitoring kondisi perangkat jaringan utama di seluruh branch regional (read-only).</p>
       </div>
 
-      <div class="filter-bar mb-3">
-        <div class="row g-2 align-items-end">
-          <div class="col-6 col-md-3">
-            <label>Branch</label>
-            <select id="filterBranch" class="form-select form-select-sm"></select>
-          </div>
-        </div>
-      </div>
+
 
       <div class="panel-card mb-3">
         <div class="panel-title">Menu Monitoring Perangkat</div>
@@ -92,8 +85,7 @@
 <script src="../../assets/js/layout.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const filterBranch = document.getElementById("filterBranch");
-  fillBranchSelect(filterBranch);
+  const branchFilter = getGlobalBranch();
 
   const MOCK_ROUTER = (typeof ROUTERS !== 'undefined' && ROUTERS.length > 0) ? ROUTERS.map(r => ({
     branch: r.branch, datacenter: r.datacenter, router: r.router, oltRemote: r.oltRemote,
@@ -169,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function applyFilter(){
-    const b = filterBranch.value;
+    const b = getGlobalBranch();
     if(currentView==="router"){
       if(currentTab==="router") routerTable.setFilter(r=>!b||r.branch===b);
       else vlanTable.setFilter(r=>!b||r.branch===b);
@@ -178,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  filterBranch.addEventListener("change", applyFilter);
+  window.addEventListener("globalBranchChange", applyFilter);
 
   document.querySelectorAll("[data-view]").forEach(el=>{
     el.addEventListener("click",e=>{

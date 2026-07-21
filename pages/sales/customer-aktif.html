@@ -27,10 +27,7 @@
 
       <div class="filter-bar">
         <div class="row g-2 align-items-end">
-          <div class="col-6 col-md-3">
-            <label>Branch</label>
-            <select id="filterBranch" class="form-select form-select-sm"></select>
-          </div>
+
         </div>
       </div>
 
@@ -104,21 +101,20 @@
 <script src="../../assets/js/layout.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  fillBranchSelect(document.getElementById("filterBranch"));
 
   const aktifData = () => CUSTOMER_DATA.filter(c => {
-    if (document.getElementById("filterBranch").value && c.branch !== document.getElementById("filterBranch").value) return false;
+    if (getGlobalBranch() && c.branch !== getGlobalBranch()) return false;
     return c.status === "Aktif";
   });
 
   const fasumData = () => CUSTOMER_DATA.filter(c => {
-    if (document.getElementById("filterBranch").value && c.branch !== document.getElementById("filterBranch").value) return false;
+    if (getGlobalBranch() && c.branch !== getGlobalBranch()) return false;
     return c.status === "Fasum";
   });
 
   function update() {
-    const b = document.getElementById("filterBranch").value;
-    const af = a => !b || a.branch === b;
+    const b = getGlobalBranch();
+    const af = r => !b || r.branch === b;
 
     document.getElementById("kpiAktif").textContent = CUSTOMER_DATA.filter(a => af(a) && a.status === "Aktif").length;
     document.getElementById("kpiFasum").textContent = CUSTOMER_DATA.filter(a => af(a) && a.status === "Fasum").length;
@@ -139,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const aktifTbl = renderSimpleTable({mountId:"aktifTable", data:CUSTOMER_DATA, searchKeys:["customer_name","phone","package","pppoe_secret"], columns:colDefs});
   const fasumTbl = renderSimpleTable({mountId:"fasumTable", data:CUSTOMER_DATA, searchKeys:["customer_name","phone","package","pppoe_secret"], columns:colDefs});
 
-  document.getElementById("filterBranch").addEventListener("change", update);
+  window.addEventListener("globalBranchChange", update);
 
   let usageChartInstance = null;
   document.addEventListener("click", e => {

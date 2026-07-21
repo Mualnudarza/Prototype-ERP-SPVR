@@ -27,10 +27,7 @@
 
       <div class="filter-bar">
         <div class="row g-2 align-items-end">
-          <div class="col-6 col-md-3">
-            <label>Branch</label>
-            <select id="filterBranch" class="form-select form-select-sm"></select>
-          </div>
+
         </div>
       </div>
 
@@ -56,9 +53,6 @@
 <script src="../../assets/js/layout.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const filterBranch = document.getElementById("filterBranch");
-    fillBranchSelect(filterBranch);
-
     const WAITLIST_MOCKS = WAITLIST_DISTRIBUTION.map((w, i) => ({
       ...w,
       number: i + 1,
@@ -82,14 +76,13 @@
     let splitterNoConfigTable = renderSimpleTable(tableOpts);
 
     function updateTable(){
-      const branch = filterBranch.value;
+      const branch = getGlobalBranch();
       splitterNoConfigTable.setFilter(r => !branch || r.branch === branch);
-      
       const filteredCount = WAITLIST_MOCKS.filter(r => !branch || r.branch === branch).length;
       document.getElementById("totalSplitters").textContent = `Total: ${filteredCount}`;
     }
 
-    filterBranch.addEventListener("change", updateTable);
+    window.addEventListener("globalBranchChange", updateTable);
     updateTable();
   });
 </script>

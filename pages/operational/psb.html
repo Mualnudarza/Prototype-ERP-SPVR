@@ -22,7 +22,7 @@
 
       <div class="filter-bar">
         <div class="row g-2 align-items-end">
-          <div class="col-6 col-md-3"><label>Branch</label><select id="filterBranch" class="form-select form-select-sm"></select></div>
+
           <div class="col-6 col-md-3"><label>Tanggal</label><input type="date" class="form-control form-control-sm" id="filterTanggal" value="2026-07-13"></div>
         </div>
       </div>
@@ -56,11 +56,10 @@
 <script src="../../assets/js/layout.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const state = { view:"psb", branch:"" };
-  fillBranchSelect(document.getElementById("filterBranch"));
+  const state = { view:"psb" };
   const viewMount = document.getElementById("viewMount");
 
-  function byBranch(r){ return !state.branch || !r.branch || r.branch === state.branch; }
+  function byBranch(r){ const b = getGlobalBranch(); return !b || !r.branch || r.branch === b; }
   function showDetail(title, rows){
     document.getElementById("detailTitle").textContent = title;
     document.getElementById("detailRows").innerHTML = rows.map(r=>`<div class="detail-row"><div class="detail-label">${r[0]}</div><div class="detail-value">${r[1]}</div></div>`).join("");
@@ -140,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function render(){ views[state.view](); }
   render();
   document.getElementById("opsTabs").addEventListener("click", e => { const b=e.target.closest("button"); if(!b) return; document.querySelectorAll(".ops-tab").forEach(x=>x.classList.remove("active")); b.classList.add("active"); state.view=b.dataset.view; render(); });
-  document.getElementById("filterBranch").addEventListener("change", e => { state.branch=e.target.value; render(); });
+  window.addEventListener("globalBranchChange", render);
   document.getElementById("viewMount").addEventListener("click", e => {
     const b=e.target.closest("button[data-id]"); if(!b) return;
     const map = {"d-psb":[WO_INSTALASI,"Detail Pemasangan"],"d-psb-wl":[WAITLIST_PSB,"Detail Pemasangan"],"d-tso":[WO_TSO,"Detail Troubleshoot"],"d-tso-wl":[WAITLIST_TSO,"Detail Troubleshoot"],"d-dis":[WO_DISMANTLE,"Detail WO Terminate"],"d-dist":[WO_DISTRIBUTION,"Detail WO Distribution"]};

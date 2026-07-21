@@ -28,10 +28,7 @@
 
       <div class="filter-bar">
         <div class="row g-2 align-items-end">
-          <div class="col-6 col-md-3">
-            <label>Branch</label>
-            <select id="filterBranch" class="form-select form-select-sm"></select>
-          </div>
+
           <div class="col-6 col-md-3">
             <label>Tanggal</label>
             <input type="date" class="form-control form-control-sm" id="filterTanggal" value="2026-07-13">
@@ -89,7 +86,6 @@
 <script src="../../assets/js/layout.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  fillBranchSelect(document.getElementById("filterBranch"));
 
   document.getElementById("kpiWaitlist").textContent = WO_TSO.filter(w=>w.status==="Wait List").length;
   document.getElementById("kpiSchedule").textContent = WO_TSO.filter(w=>w.status==="Penjadwalan").length;
@@ -109,8 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
     options: { plugins: { legend: { position:"bottom" } } }
   });
 
-  let filters = { branch: "" };
-  function filterFn(r){ return !filters.branch || r.branch === filters.branch; }
+  function filterFn(r){ const branch = getGlobalBranch(); return !branch || r.branch === branch; }
   const table = renderSimpleTable({
     mountId: "tsoTable", data: WO_TSO, filterFn: filterFn,
     searchKeys: ["customer_name","pppoe_secret","team_katim"],
@@ -122,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ]
   });
 
-  document.getElementById("filterBranch").addEventListener("change", e => { filters.branch = e.target.value; table.setFilter(filterFn); });
+  window.addEventListener("globalBranchChange", () => table.setFilter(filterFn));
 
   document.getElementById("tsoTable").addEventListener("click", e => {
     const btn = e.target.closest(".btn-tso-detail"); if(!btn) return;

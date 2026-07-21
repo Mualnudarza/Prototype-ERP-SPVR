@@ -106,10 +106,20 @@
 <script src="assets/js/layout.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("kpi-branch").textContent = BRANCHES.length;
-  document.getElementById("kpi-active").textContent = CUSTOMER_DATA.filter(c => c.status === "Aktif").length;
-  document.getElementById("kpi-isolir").textContent = CUSTOMER_DATA.filter(c => c.status === "Isolir").length;
-  document.getElementById("kpi-waitlist").textContent = WAITLIST_PSB.length + WO_TSO.filter(w=>w.status==="Wait List").length;
+  function updateKPIs() {
+    const branch = getGlobalBranch();
+    const af = r => !branch || r.branch === branch;
+    
+    document.getElementById("kpi-branch").textContent = branch ? 1 : BRANCHES.length;
+    document.getElementById("kpi-active").textContent = CUSTOMER_DATA.filter(c => af(c) && c.status === "Aktif").length;
+    document.getElementById("kpi-isolir").textContent = CUSTOMER_DATA.filter(c => af(c) && c.status === "Isolir").length;
+    document.getElementById("kpi-waitlist").textContent = 
+      WAITLIST_PSB.filter(af).length + 
+      WO_TSO.filter(w => af(w) && w.status === "Wait List").length;
+  }
+
+  window.addEventListener("globalBranchChange", updateKPIs);
+  updateKPIs();
 });
 </script>
 </body>

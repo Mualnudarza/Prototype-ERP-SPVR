@@ -24,6 +24,15 @@ function fillBranchSelect(selectEl, includeAll = true){
   selectEl.innerHTML = html;
 }
 
+function getGlobalBranch() {
+  return localStorage.getItem("globalBranch") || "";
+}
+
+function setGlobalBranch(branch) {
+  localStorage.setItem("globalBranch", branch);
+  window.dispatchEvent(new CustomEvent("globalBranchChange", { detail: { branch } }));
+}
+
 function sortCompare(a, b, type) {
   if (type === "number") return (Number(a) || 0) - (Number(b) || 0);
   if (type === "date") return new Date(a).getTime() - new Date(b).getTime();

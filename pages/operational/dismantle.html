@@ -27,10 +27,7 @@
 
       <div class="filter-bar">
         <div class="row g-2 align-items-end">
-          <div class="col-6 col-md-3">
-            <label>Branch</label>
-            <select id="filterBranch" class="form-select form-select-sm"></select>
-          </div>
+
           <div class="col-6 col-md-3">
             <label>Tanggal</label>
             <input type="date" class="form-control form-control-sm" id="filterTanggal" value="2026-07-13">
@@ -84,7 +81,6 @@
 <script src="../../assets/js/layout.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  fillBranchSelect(document.getElementById("filterBranch"));
 
   const waitingRows = WO_DISMANTLE.filter(w => w.status === "Menunggu Penjadwalan");
   const todayRows = WO_DISMANTLE.filter(w => w.status === "Terjadwal Hari Ini");
@@ -94,8 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("kpiSelesai").textContent = HISTORI_DISMANTLE.length;
   document.getElementById("kpiBranch").textContent = new Set(WO_DISMANTLE.map(w=>w.branch)).size;
 
-  let filters = { branch: "" };
-  function ff(r){ return !filters.branch || r.branch === filters.branch; }
+  function ff(r){ const branch = getGlobalBranch(); return !branch || r.branch === branch; }
 
   function showDetail(row, source){
     let rows;
@@ -154,10 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showDetail(HISTORI_DISMANTLE.find(x=>x.id==b.dataset.id), "history");
   });
 
-  document.getElementById("filterBranch").addEventListener("change", e => {
-    filters.branch = e.target.value;
-    waitingTable.setFilter(ff); todayTable.setFilter(ff); historyTable.setFilter(ff);
-  });
+  window.addEventListener("globalBranchChange", () => { waitingTable.setFilter(ff); todayTable.setFilter(ff); historyTable.setFilter(ff); });
 });
 </script>
 </body>

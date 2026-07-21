@@ -27,10 +27,7 @@
 
       <div class="filter-bar">
         <div class="row g-2 align-items-end">
-          <div class="col-6 col-md-3">
-            <label>Branch</label>
-            <select id="filterBranch" class="form-select form-select-sm"></select>
-          </div>
+
         </div>
       </div>
 
@@ -57,11 +54,8 @@
 <script src="../../assets/js/layout.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const filterBranch = document.getElementById("filterBranch");
-    fillBranchSelect(filterBranch);
-
-    filterBranch.addEventListener("change", () => {
-      console.log("Branch selected for Map Access:", filterBranch.value);
+    window.addEventListener("globalBranchChange", () => {
+      console.log("Branch selected for Map Access:", getGlobalBranch());
       // Implement map rendering/update logic based on selected branch
     });
   });

@@ -28,10 +28,7 @@
 
       <div class="filter-bar">
         <div class="row g-2 align-items-end">
-          <div class="col-6 col-md-3">
-            <label>Branch</label>
-            <select id="filterBranch" class="form-select form-select-sm"></select>
-          </div>
+
           <div class="col-6 col-md-2">
             <label>Bulan</label>
             <select id="filterBulan" class="form-select form-select-sm"></select>
@@ -140,8 +137,6 @@
   }
 
 document.addEventListener("DOMContentLoaded", () => {
-  fillBranchSelect(document.getElementById("filterBranch"));
-
   const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const currentMonthIdx = new Date().getMonth();
   const filterBulan = document.getElementById("filterBulan");
@@ -150,22 +145,19 @@ document.addEventListener("DOMContentLoaded", () => {
   let trendChartInstance = null;
   let currentStatusFilter = "all";
 
-  // Base filter: branch + month/year (no status filter for KPI & chart)
   function getBaseFiltered() {
-    const branch = document.getElementById("filterBranch").value;
+    const branch = getGlobalBranch();
     const monthIdx = parseInt(filterBulan.value, 10);
     const year = document.getElementById("filterTahun").value;
     const yearSuffix = year.slice(-2);
-
     return CUSTOMER_DATA.filter(c => {
       if (branch && c.branch !== branch) return false;
       const subDate = parseDate(c.subscribe_date);
       if (!subDate || subDate.getMonth() !== monthIdx || String(subDate.getFullYear()).slice(-2) !== yearSuffix) return false;
-      return c.status !== "Fasum"; // Exclude Fasum from retention analysis
+      return c.status !== "Fasum";
     });
   }
 
-  // Table filter: base + status (only Isolir/Terminate)
   function getTableFiltered() {
     const base = getBaseFiltered();
     if (currentStatusFilter === "all") return base.filter(c => c.status === "Isolir" || c.status === "Terminate");
@@ -174,17 +166,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateDashboard() {
     const base = getBaseFiltered();
-
     const activeCount = base.filter(c => c.status === "Aktif").length;
     const isolirCount = base.filter(c => c.status === "Isolir").length;
     const terminateCount = base.filter(c => c.status === "Terminate").length;
-
     document.getElementById("kpiTotal").textContent = base.length;
     document.getElementById("kpiAktif").textContent = activeCount;
     document.getElementById("kpiIsolir").textContent = isolirCount;
     document.getElementById("kpiTerminate").textContent = terminateCount;
-
-    // Trend Chart (dummy)
     const dummyTrendData = {
       labels: ["Jan","Feb","Mar","Apr","Mei","Jun"],
       datasets: [
@@ -200,7 +188,6 @@ document.addEventListener("DOMContentLoaded", () => {
       data: dummyTrendData,
       options: { maintainAspectRatio: false, plugins: { legend: { position: "bottom" } }, scales: { y: { beginAtZero: true } } }
     });
-
     table.setFilter(getTableFiltered);
   }
 
@@ -222,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ]
   });
 
-  document.getElementById("filterBranch").addEventListener("change", updateDashboard);
+  window.addEventListener("globalBranchChange", updateDashboard);
   document.getElementById("filterBulan").addEventListener("change", updateDashboard);
   document.getElementById("filterTahun").addEventListener("input", updateDashboard);
 
@@ -248,7 +235,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ["Status Customer", badge(row.status)]
     ];
     document.getElementById("custDetailRows").innerHTML = rows.map(r => `<div class="detail-row"><div class="detail-label">${r[0]}</div><div class="detail-value">${r[1]}</div></div>`).join("");
-
     if (usageChartInstance) usageChartInstance.destroy();
     usageChartInstance = new Chart(document.getElementById("custUsageChart"), {
       type: "line",

@@ -1,5 +1,4 @@
 function initializeBranchLeaderAnalytics() {
-  var currentBranch = "Temas";
   var monthNames = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
   var currentYear = new Date().getFullYear();
   var currentMonth = new Date().getMonth() + 1;
@@ -40,7 +39,8 @@ function initializeBranchLeaderAnalytics() {
   }
 
   function rows(month) {
-    return AREA_DATA.filter(function(a) { return a.branch === currentBranch; }).map(function(a) {
+    var branch = getGlobalBranch();
+    return AREA_DATA.filter(function(a) { return !branch || a.branch === branch; }).map(function(a) {
       return Object.assign({}, a, { monthly_change: monthlyChange(a, Number(month)) });
     });
   }
@@ -288,6 +288,7 @@ function initializeBranchLeaderAnalytics() {
   [els.globalMonth, els.globalYear].forEach(function(el) { el.addEventListener("change", renderGlobal); });
   [els.growthType, els.growthArea, els.growthSortDir].forEach(function(el) { el.addEventListener("change", renderGrowthOnly); });
   [els.tableMonth, els.tableType].forEach(function(el) { el.addEventListener("change", renderTableOnly); });
+  window.addEventListener("globalBranchChange", renderGlobal);
   els.closingArea.addEventListener("change", renderClosingChart);
 
   // Modal growth filters

@@ -44,6 +44,7 @@ function renderLayout() {
             ${heading("Area")}
             ${item("pages/area/open-area.html", "area-open", "map", "Coverage Area")}
             ${item("pages/area/analisa-area-branch.html", "area-analisa-branch", "bar-chart", "Analisa Area Branch")}
+            ${item("pages/area/performance-ae.html", "area-performance-ae", "activity", "Performance AE")}
             ${heading("Sales")}
             ${item("pages/sales/retention.html", "sales-retention", "users", "Customer Isolir & Terminate")}
             ${item("pages/sales/customer-aktif.html", "sales-customer-aktif", "star", "Customer Aktif & Fasum")}

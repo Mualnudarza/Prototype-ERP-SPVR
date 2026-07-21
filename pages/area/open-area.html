@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
       {label:"Kode Area", key:"area_code"},
       {label:"Kategori", render: r => badge(r.is_primary === 1 ? "Primary" : "Overlay")},
       {label:"Tgl Open", key:"open_date"},
-      {label:"Aksi", render: r => `<a href="detail.html?branch=${encodeURIComponent(r.branch)}&id=${r.id}" class="btn btn-sm btn-outline-primary">Detail</a>`}
+      {label:"Aksi", render: r => `<a href="detail.html?id=${r.id}" class="btn btn-sm btn-outline-primary">Detail</a>`}
     ]
   });
 

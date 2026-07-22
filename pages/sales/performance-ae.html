@@ -7,7 +7,6 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
 <div id="app-navbar"></div>
@@ -35,13 +34,6 @@
         <div class="col-6 col-md-3"><div class="kpi-card mono"><div class="kpi-label">Total Lost Prospect</div><div class="kpi-value" id="kpi-lost">0</div></div></div>
       </div>
 
-      <div class="panel-card mb-3">
-        <div class="panel-title d-flex justify-content-between align-items-center flex-wrap gap-2">
-          <span>Komposisi Cold Prospect AE</span>
-          <select id="chartSort" class="form-select form-select-sm" style="width:auto;"><option value="desc">Descending</option><option value="asc">Ascending</option></select>
-        </div>
-        <div style="height:340px;position:relative;"><canvas id="cpChart"></canvas></div>
-      </div>
 
       <div class="panel-card">
         <div class="panel-title">Tabel Performance AE</div>
@@ -68,7 +60,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../../assets/js/data.js"></script>
 <script src="../../assets/js/common.js"></script>
-<script>window.BASE="../../"; window.ACTIVE_MENU="area-performance-ae";</script>
+<script>window.BASE="../../"; window.ACTIVE_MENU="sales-performance-ae";</script>
 <script src="../../assets/js/layout.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -76,7 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const currentYear = new Date().getFullYear();
   let selectedMonth = new Date().getMonth();
   let selectedYear = currentYear;
-  let chartInstance = null;
   let sortState = { key: null, dir: "asc" };
 
   filterMonth.innerHTML = monthNames.map((m,i)=>`<option value="${i}" ${i===selectedMonth?"selected":""}>${m}</option>`).join("");
@@ -127,24 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("kpi-lost").textContent = data.reduce((n,r)=>n+r.lost,0);
   }
 
-  function updateChart(data) {
-    const dir = chartSort.value === "asc" ? 1 : -1;
-    const chartRows = [...data].sort((a,b)=>(a.total_cp-b.total_cp)*dir);
-    if (chartInstance) chartInstance.destroy();
-    chartInstance = new Chart(document.getElementById("cpChart"), {
-      type: "bar",
-      data: {
-        labels: chartRows.map(r=>r.sales_name),
-        datasets: [
-          {label:"Hot", data:chartRows.map(r=>r.hot), backgroundColor:"#22c55e"},
-          {label:"Lost", data:chartRows.map(r=>r.lost), backgroundColor:"#ef4444"},
-          {label:"No Action", data:chartRows.map(r=>r.no_action), backgroundColor:"#9ca3af"},
-          {label:"Lost by System", data:chartRows.map(r=>r.lost_system), backgroundColor:"#f59e0b"}
-        ]
-      },
-      options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom"}},scales:{x:{stacked:true,beginAtZero:true,grid:{display:true},title:{display:true,text:"Jumlah Cold Prospect"}},y:{stacked:true,grid:{display:true}}}}
-    });
-  }
 
   function renderTable(data) {
     const q = searchSales.value.toLowerCase();
@@ -160,7 +133,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function render() {
     const data = aeSummary();
     updateKpis(data);
-    updateChart(data);
     renderTable(data);
   }
 
@@ -179,7 +151,6 @@ document.addEventListener("DOMContentLoaded", () => {
   filterYear.addEventListener("change", e => { selectedYear = Number(e.target.value); render(); });
   filterWeek.addEventListener("change", render);
   searchSales.addEventListener("input", render);
-  chartSort.addEventListener("change", render);
   window.addEventListener("globalBranchChange", render);
   render();
 });

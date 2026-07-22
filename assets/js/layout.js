@@ -44,13 +44,13 @@ function renderLayout() {
             ${heading("Area")}
             ${item("pages/area/open-area.html", "area-open", "map", "Coverage Area")}
             ${item("pages/area/analisa-area-branch.html", "area-analisa-branch", "bar-chart", "Analisa Area Branch")}
-            ${item("pages/area/performance-ae.html", "area-performance-ae", "activity", "Performance AE")}
-            ${item("pages/area/dismantle-performance.html", "area-dismantle-performance", "tool", "Dismantle Performance")}
             ${heading("Sales")}
             ${item("pages/sales/retention.html", "sales-retention", "users", "Customer Isolir & Terminate")}
             ${item("pages/sales/customer-aktif.html", "sales-customer-aktif", "star", "Customer Aktif & Fasum")}
+            ${item("pages/sales/performance-ae.html", "sales-performance-ae", "activity", "Performance AE")}
             ${heading("Operational & Technical")}
-            ${item("pages/operational/psb.html", "op-psb", "chevrons-right", "Modul Operasional & Teknis")}
+            ${item("pages/operational/psb.html", "op-psb", "chevrons-right", "Monitoring Work Order")}
+            ${item("pages/operational/dismantle-performance.html", "op-dismantle-performance", "tool", "Dismantle Performance")}
             ${heading("Monitoring Infrastruktur")}
             ${item("pages/infra-monitoring/monitor-odp.html", "infra-monitoring-odp", "monitor", "Monitor ODP")}
             ${item("pages/infra-monitoring/list-area-splitter.html", "infra-monitoring-splitter-area", "list", "List Area Splitter")}

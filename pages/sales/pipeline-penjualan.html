@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monitoring Pipeline Penjualan | GriyaNet ERP</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/style.css">
+<style>
+  .chart-container {
+    height: 300px;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+<div id="app-navbar"></div>
+<div class="container-fluid">
+  <div class="row">
+    <div id="app-sidebar"></div>
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+      <div class="page-header">
+        <div class="page-breadcrumb">
+          <a href="../../index.html">Dashboard</a><span class="sep">/</span>
+          <span>Sales</span><span class="sep">/</span>
+          <span class="text-dark">Pipeline Penjualan</span>
+        </div>
+        <h1 class="page-title">Monitoring Pipeline Penjualan</h1>
+        <p class="page-description">Monitoring perkembangan prospek pelanggan pada seluruh tahapan proses penjualan.</p>
+      </div>
+
+      <ul class="nav nav-tabs mb-4" id="pipelineTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="cp-tab" data-bs-toggle="tab" data-bs-target="#cp-content" type="button" role="tab" aria-controls="cp-content" aria-selected="true">Cold Prospect</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="hp-tab" data-bs-toggle="tab" data-bs-target="#hp-content" type="button" role="tab" aria-controls="hp-content" aria-selected="false">Hot Prospect</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress-content" type="button" role="tab" aria-controls="progress-content" aria-selected="false">Progress</button>
+        </li>
+      </ul>
+
+      <div class="filter-bar mb-3 d-flex gap-2">
+         <!-- Halaman-level Filters: Bulan, Tahun -->
+        <select class="form-select form-select-sm w-auto" id="filterBulan">
+          <option value="">Semua Bulan</option>
+          <option value="1">Januari</option>
+          <option value="2">Februari</option>
+          <option value="3">Maret</option>
+          <option value="4">April</option>
+          <option value="5">Mei</option>
+          <option value="6">Juni</option>
+          <option value="7">Juli</option>
+          <option value="8">Agustus</option>
+          <option value="9">September</option>
+          <option value="10">Oktober</option>
+          <option value="11">November</option>
+          <option value="12">Desember</option>
+        </select>
+        <select class="form-select form-select-sm w-auto" id="filterTahun">
+          <option value="">Semua Tahun</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+        </select>
+      </div>
+
+      <div class="tab-content" id="pipelineTabContent">
+
+        <!-- COLD PROSPECT -->
+        <div class="tab-pane fade show active" id="cp-content" role="tabpanel" aria-labelledby="cp-tab">
+          <div class="row g-3 mb-3">
+            <div class="col-6 col-md-3">
+              <div class="kpi-card mono">
+                <div class="kpi-label">Total Cold Prospect</div>
+                <div class="kpi-value" id="kpiCpTotal">0</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card mb-3">
+             <div class="filter-bar mb-3 d-flex gap-2">
+                <select class="form-select form-select-sm w-auto" id="filterCpSales">
+                  <option value="">Semua Sales</option>
+                </select>
+                <select class="form-select form-select-sm w-auto" id="filterCpPeriode">
+                  <option value="">Semua Waktu</option>
+                  <option value="this_week">This Week</option>
+                  <option value="last_week">Last Week</option>
+                  <option value="more_than_2_weeks">More Than 2 Weeks Ago</option>
+                </select>
+             </div>
+             
+             <div class="chart-container">
+               <canvas id="cpChart"></canvas>
+             </div>
+
+            <div id="cpTable"></div>
+          </div>
+        </div>
+
+        <!-- HOT PROSPECT -->
+        <div class="tab-pane fade" id="hp-content" role="tabpanel" aria-labelledby="hp-tab">
+           <div class="row g-3 mb-3">
+            <div class="col-6 col-md-3">
+              <div class="kpi-card mono">
+                <div class="kpi-label">Total Belum Ditindaklanjuti</div>
+                <div class="kpi-value" id="kpiHpPending">0</div>
+              </div>
+            </div>
+             <div class="col-6 col-md-3">
+              <div class="kpi-card mono">
+                <div class="kpi-label">Total Hot Prospect</div>
+                <div class="kpi-value" id="kpiHpTotal">0</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card mb-3">
+              <div class="filter-bar mb-3 d-flex gap-2">
+                <select class="form-select form-select-sm w-auto" id="filterHpMinggu">
+                  <option value="">Semua Minggu</option>
+                  <option value="1">Minggu 1</option>
+                  <option value="2">Minggu 2</option>
+                  <option value="3">Minggu 3</option>
+                  <option value="4">Minggu 4</option>
+                  <option value="5">Minggu 5</option>
+                </select>
+                 <select class="form-select form-select-sm w-auto" id="filterHpStatus">
+                  <option value="">Semua Status</option>
+                </select>
+             </div>
+            <div id="hpTable"></div>
+          </div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="tab-pane fade" id="progress-content" role="tabpanel" aria-labelledby="progress-tab">
+           <div class="row g-3 mb-3">
+            <div class="col-6 col-md-3">
+              <div class="kpi-card mono">
+                <div class="kpi-label">Total Progress Prospect</div>
+                <div class="kpi-value" id="kpiProgressTotal">0</div>
+              </div>
+            </div>
+             <div class="col-6 col-md-3">
+              <div class="kpi-card mono">
+                <div class="kpi-label">Menunggu Penjadwalan</div>
+                <div class="kpi-value" id="kpiProgressSchedule">0</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="kpi-card mono">
+                <div class="kpi-label">Menunggu Payment</div>
+                <div class="kpi-value" id="kpiProgressPayment">0</div>
+              </div>
+            </div>
+          </div>
+
+           <div class="panel-card mb-3">
+              <div class="filter-bar mb-3 d-flex gap-2">
+                 <select class="form-select form-select-sm w-auto" id="filterProgressStatus">
+                  <option value="">Semua Status</option>
+                </select>
+                 <select class="form-select form-select-sm w-auto" id="filterProgressSales">
+                  <option value="">Semua Sales</option>
+                </select>
+             </div>
+            <div id="progressTable"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="../../assets/js/data.js"></script>
+<script src="../../assets/js/common.js"></script>
+<script>
+  window.BASE = "../../";
+  window.ACTIVE_MENU = "sales-pipeline"; // Asumsi nama menu
+</script>
+<script src="../../assets/js/layout.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  // Helper to populate select options
+  var fillSelect = function(id, values){
+    var s = document.getElementById(id);
+    if (!s) return;
+    // Remove existing options except the first one if it says "All"
+    for(var i = s.options.length - 1; i >= 0; i--){
+      if(s.options[i].value !== '') s.remove(i);
+    }
+    values.forEach(function(v){
+      s.appendChild(new Option(v, v));
+    });
+  };
+
+  // Initialize Data Sources
+  var BRANCHES = typeof window.BRANCHES !== 'undefined' ? window.BRANCHES : ["Branch A","Branch B","Branch C"];
+  var SALES = typeof window.TEAMS !== 'undefined' ? window.TEAMS : ["Agus","Budi","Citra","Dewi"];
+  var PACKAGES = typeof window.PACKAGES !== 'undefined' ? window.PACKAGES : ["Gold","Silver","Platinum"];
+
+  // Build Unified Prospect Data from Customer Data + fallback generator
+  var source = (window.CUSTOMER_DATA || []);
+  if (!source.length) {
+    source = Array.from({length: 30}, function(_, i){
+      var d = new Date();
+      d.setDate(d.getDate() - i);
+      return {
+        id: i + 1,
+        branch: BRANCHES[i % BRANCHES.length],
+        customer_name: "Prospect " + (i + 1),
+        phone: "0812" + String(1000000 + i).slice(-7),
+        sales: SALES[i % SALES.length],
+        address: "Jl. Utama No. " + (i + 1),
+        package: PACKAGES[i % PACKAGES.length],
+        input_by: "Admin " + ((i % 3) + 1),
+        updated_at: d.toISOString().split('T')[0],
+        created_at: d.toISOString().split('T')[0]
+      };
+    });
+  }
+
+  var unified = [];
+  source.forEach(function(c, idx){
+    var branch = c.branch || (idx < 15 ? "Branch A" : (idx < 30 ? "Branch B" : "Branch C"));
+    unified.push({
+      id: `cp-${c.id || idx+1}`, branch, customer_name: c.customer_name || ("Prospect " + (idx+1)),
+      phone: c.phone || `0812${String(Math.floor(Math.random() * 10000000)).padStart(7, "0")}`, 
+      sales: c.sales || (idx % 4 === 0 ? "Agus" : (idx % 4 === 1 ? "Budi" : (idx % 4 === 2 ? "Citra" : "Dewi"))),
+      input_by: c.input_by || "Admin", last_update: c.updated_at || new Date().toISOString().split('T')[0],
+      updated_at: c.updated_at || new Date().toISOString().split('T')[0], created_at: c.created_at || new Date().toISOString().split('T')[0],
+      month: new Date(c.created_at || new Date()).getMonth() + 1, year: new Date(c.created_at || new Date()).getFullYear(), week: Math.ceil(new Date(c.created_at || new Date()).getDate() / 7)
+    });
+    unified.push({
+      id: `hp-${c.id || idx+1}`, branch, customer_name: c.customer_name || ("Prospect " + (idx+1)),
+      phone: c.phone || `0812${String(Math.floor(Math.random() * 10000000)).padStart(7, "0")}`, address: c.address || "Jl. Utama " + (idx+1),
+      access: idx % 2 === 0 ? "Mudah" : "Sulit",
+      sales: c.sales || ["Agus","Budi","Citra","Dewi"][idx % 4], surveyor: "Teknisi " + ((idx % 3) + 1),
+      status: ["Menunggu Survey","Survey Selesai","Penawaran Diberikan"][idx % 3],
+      updated_at: c.updated_at, month: new Date(c.updated_at).getMonth() + 1, year: new Date(c.updated_at).getFullYear(), week: Math.ceil(new Date(c.updated_at).getDate() / 7)
+    });
+    unified.push({
+      id: `prog-${c.id || idx+1}`, branch, customer_name: c.customer_name || ("Prospect " + (idx+1)),
+      phone: c.phone || `0812${String(Math.floor(Math.random() * 10000000)).padStart(7, "0")}`, address: c.address || "Jl. Utama " + (idx+1),
+      package: c.package || (idx % 3 === 0 ? "Gold" : (idx % 3 === 1 ? "Silver" : "Platinum")),
+      sales: c.sales || ["Agus","Budi","Citra","Dewi"][idx % 4], surveyor: "Teknisi " + ((idx % 3) + 1),
+      schedule: new Date(Date.now() + ((idx % 7) + 1) * 86400000).toISOString().split('T')[0],
+      phase: ["Penawaran","Instalasi","Aktivasi"][idx % 3],
+      status: ["Menunggu Penjadwalan","Sedang Proses","Menunggu Payment","Selesai"][idx % 4]
+    });
+  });
+
+  // Create Data Arrays for Each Component
+  var MOCK_CP = unified.filter(function(d){ return d.id.startsWith('cp') || d.id.startsWith(1001); });
+  var MOCK_HP = unified.filter(function(d){ return d.id.startsWith('hp'); });
+  var MOCK_PROG = unified.filter(function(d){ return d.id.startsWith('prog') || !d.id.startsWith('cp') && !d.id.startsWith('hp'); });
+
+  // Populate Dropdown Filters
+  fillSelect("filterCpSales", SALES);
+  fillSelect("filterHpStatus", ["Menunggu Survey","Survey Selesai","Penawaran Diberikan"]);
+  fillSelect("filterProgressStatus", ["Menunggu Penjadwalan","Sedang Proses","Menunggu Payment","Selesai"]);
+  fillSelect("filterProgressSales", SALES);
+
+  // Chart Instance
+  var cpChartInstance = null;
+
+  // Render Functions
+  function updateCP() {
+      const gBranch = getGlobalBranch();
+      const gMonth = document.getElementById("filterBulan").value;
+      const gYear = document.getElementById("filterTahun").value;
+      const lSales = document.getElementById("filterCpSales").value;
+      const lPeriode = document.getElementById("filterCpPeriode").value; // Need logic for this
+
+      const filteredData = MOCK_CP.filter(c => {
+          if (gBranch && c.branch !== gBranch) return false;
+          if (gMonth && c.month !== parseInt(gMonth)) return false;
+          if (gYear && c.year !== parseInt(gYear)) return false;
+          if (lSales && c.sales !== lSales) return false;
+          
+          if(lPeriode) {
+             const now = new Date();
+             const itemDate = new Date(c.created_at);
+             const diffTime = Math.abs(now - itemDate);
+             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+             
+             if (lPeriode === 'this_week' && diffDays > 7) return false;
+             if (lPeriode === 'last_week' && (diffDays <= 7 || diffDays > 14)) return false;
+             if (lPeriode === 'more_than_2_weeks' && diffDays <= 14) return false;
+          }
+
+          return true;
+      });
+
+      document.getElementById("kpiCpTotal").textContent = filteredData.length;
+      
+      cpTbl.setFilter(() => true); // Table handles its own data update below
+      cpTbl.updateData(filteredData);
+
+      // Chart Update
+      const branchCounts = {};
+      filteredData.forEach(d => {
+          branchCounts[d.branch] = (branchCounts[d.branch] || 0) + 1;
+      });
+
+      const labels = Object.keys(branchCounts);
+      const data = Object.values(branchCounts);
+
+      if (cpChartInstance) cpChartInstance.destroy();
+      
+      cpChartInstance = new Chart(document.getElementById("cpChart"), {
+          type: 'bar',
+          data: {
+              labels: labels,
+              datasets: [{
+                  label: 'Jumlah Cold Prospect',
+                  data: data,
+                  backgroundColor: '#6c757d'
+              }]
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                  y: { beginAtZero: true }
+              }
+          }
+      });
+  }
+
+  function updateHP() {
+      const gBranch = getGlobalBranch();
+      const gMonth = document.getElementById("filterBulan").value;
+      const gYear = document.getElementById("filterTahun").value;
+      const lWeek = document.getElementById("filterHpMinggu").value;
+      const lStatus = document.getElementById("filterHpStatus").value;
+
+      const filteredData = MOCK_HP.filter(c => {
+          if (gBranch && c.branch !== gBranch) return false;
+          if (gMonth && c.month !== parseInt(gMonth)) return false;
+          if (gYear && c.year !== parseInt(gYear)) return false;
+          if (lWeek && c.week !== lWeek) return false;
+          if (lStatus && c.status !== lStatus) return false;
+          return true;
+      });
+
+      document.getElementById("kpiHpTotal").textContent = filteredData.length;
+      document.getElementById("kpiHpPending").textContent = filteredData.filter(d => d.status.toLowerCase().includes("menunggu")).length; // Dummy logic
+
+      hpTbl.updateData(filteredData);
+  }
+
+  function updateProgress() {
+      const gBranch = getGlobalBranch();
+      const gMonth = document.getElementById("filterBulan").value;
+      const gYear = document.getElementById("filterTahun").value;
+      const lStatus = document.getElementById("filterProgressStatus").value;
+      const lSales = document.getElementById("filterProgressSales").value;
+
+       const filteredData = MOCK_PROG.filter(c => {
+          if (gBranch && c.branch !== gBranch) return false;
+          if (gMonth && c.month !== parseInt(gMonth)) return false;
+          if (gYear && c.year !== parseInt(gYear)) return false;
+          if (lStatus && c.status !== lStatus) return false;
+          if (lSales && c.sales !== lSales) return false;
+          return true;
+      });
+
+      document.getElementById("kpiProgressTotal").textContent = filteredData.length;
+      document.getElementById("kpiProgressSchedule").textContent = filteredData.filter(d => d.status === "Menunggu Penjadwalan").length;
+      document.getElementById("kpiProgressPayment").textContent = filteredData.filter(d => d.status === "Menunggu Payment").length;
+
+      progTbl.updateData(filteredData);
+  }
+
+  function updateAll() {
+      updateCP();
+      updateHP();
+      updateProgress();
+  }
+
+
+  // Tables Setup
+  const cpCols = [
+      {label: "Nama", key: "customer_name"},
+      {label: "No. Telepon", key: "phone"},
+      {label: "Input By", key: "input_by"},
+      {label: "Last Update", key: "last_update"},
+      {label: "Updated At", key: "updated_at"},
+      {label: "Created At", key: "created_at"}
+  ];
+
+  const hpCols = [
+      {label: "Nama", key: "customer_name"},
+      {label: "Alamat", key: "address"},
+      {label: "No. Telepon", key: "phone"},
+      {label: "Access", key: "access"},
+      {label: "Sales", key: "sales"},
+      {label: "Surveyor", key: "surveyor"},
+      {label: "Status", key: "status"},
+      {label: "Updated At", key: "updated_at"}
+  ];
+
+  const progCols = [
+      {label: "Nama", key: "customer_name"},
+      {label: "Alamat", key: "address"},
+      {label: "No. Telepon", key: "phone"},
+      {label: "Paket Layanan", key: "package"},
+      {label: "Sales", key: "sales"},
+      {label: "Surveyor", key: "surveyor"},
+      {label: "Jadwal", key: "schedule"},
+      {label: "Phase", key: "phase"},
+      {label: "Status", key: "status"}
+  ];
+
+  // Helper extension to re-render simpleTable with new data
+  const renderTableWithUpdate = (opts) => {
+      const wrapper = document.getElementById(opts.mountId);
+      let currentData = opts.data;
+      
+      const render = () => {
+         wrapper.innerHTML = "";
+         const tmpNode = document.createElement("div");
+         tmpNode.id = opts.mountId + "_inner";
+         wrapper.appendChild(tmpNode);
+         window.renderSimpleTable({...opts, mountId: tmpNode.id, data: currentData});
+      }
+
+      render();
+
+      return {
+          updateData: (newData) => {
+              currentData = newData;
+              render();
+          },
+          setFilter: () => {} // handled by updateData in this implementation
+      }
+  }
+
+  const cpTbl = renderTableWithUpdate({mountId: "cpTable", data: MOCK_CP, columns: cpCols});
+  const hpTbl = renderTableWithUpdate({mountId: "hpTable", data: MOCK_HP, columns: hpCols});
+  const progTbl = renderTableWithUpdate({mountId: "progressTable", data: MOCK_PROG, columns: progCols});
+
+
+  // Listeners
+  window.addEventListener("globalBranchChange", updateAll);
+  
+  document.getElementById("filterBulan").addEventListener("change", updateAll);
+  document.getElementById("filterTahun").addEventListener("change", updateAll);
+  
+  document.getElementById("filterCpSales").addEventListener("change", updateCP);
+  document.getElementById("filterCpPeriode").addEventListener("change", updateCP);
+  
+  document.getElementById("filterHpMinggu").addEventListener("change", updateHP);
+  document.getElementById("filterHpStatus").addEventListener("change", updateHP);
+  
+  document.getElementById("filterProgressStatus").addEventListener("change", updateProgress);
+  document.getElementById("filterProgressSales").addEventListener("change", updateProgress);
+
+  // Initial Load
+  updateAll();
+
+  // Tab change listener to re-render chart if needed (fixes chart.js canvas size issue in hidden tabs)
+  document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(tab => {
+    tab.addEventListener('shown.bs.tab', event => {
+        if (event.target.id === 'cp-tab') updateCP();
+    })
+  })
+
+});
+</script>
+</body>
+</html>

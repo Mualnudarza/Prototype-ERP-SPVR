@@ -47,6 +47,7 @@ function renderLayout() {
             ${heading("Sales")}
             ${item("pages/sales/retention.html", "sales-retention", "users", "Customer Isolir & Terminate")}
             ${item("pages/sales/customer-aktif.html", "sales-customer-aktif", "star", "Customer Aktif & Fasum")}
+            ${item("pages/sales/pipeline-penjualan.html", "sales-pipeline", "bar-chart", "Pipeline Penjualan")}
             ${item("pages/sales/performance-ae.html", "sales-performance-ae", "activity", "Performance AE")}
             ${heading("Operational & Technical")}
             ${item("pages/operational/psb.html", "op-psb", "chevrons-right", "Monitoring Work Order")}

@@ -14,3 +14,12 @@ id,branch,customer_name,pppoe_secret,type,tanggal_jadwal,team_katim,access,port_
 13,Bumiaji,Maya Sari 13,cust3612,Garansi,01-Jan-26,Team Charlie / Rudi,P-7,Port 6,Selesai
 14,Dau,Doni Kurniawan 14,cust3613,Reguler,08-Feb-26,Team Delta / Sani,P-8,Port 7,Selesai
 15,Temas,Lestari Putri 15,cust3614,Garansi,15-Mar-26,Team Echo / Wawan,P-9,Port 8,Selesai
+16,Temas,Rizky Pratama 76,cust1076,Reguler,06-Aug-26,Team Alpha / Rudi,P-10,Port 1,Selesai
+17,Bumiaji,Indah Permata 77,cust1077,Garansi,14-Aug-26,Team Bravo / Sani,P-11,Port 3,Selesai
+18,Dau,Fajar Shadiq 78,cust1078,Reguler,23-Aug-26,Team Charlie / Wawan,P-12,Port 2,Selesai
+19,Temas,Rian Ardiansyah 91,cust1091,Garansi,05-Sep-26,Team Delta / Rudi,P-13,Port 4,Selesai
+20,Bumiaji,Sari Wulandari 92,cust1092,Reguler,16-Sep-26,Team Echo / Sani,P-14,Port 1,Selesai
+21,Dau,Hadi Kusuma 93,cust1093,Garansi,25-Sep-26,Team Alpha / Wawan,P-15,Port 2,Selesai
+22,Temas,Satria Danu 106,cust1106,Reguler,04-Oct-26,Team Bravo / Rudi,P-16,Port 3,Selesai
+23,Bumiaji,Anisa Rahma 107,cust1107,Garansi,15-Oct-26,Team Charlie / Sani,P-17,Port 4,Selesai
+24,Dau,Rendy Pangalila 108,cust1108,Reguler,26-Oct-26,Team Delta / Wawan,P-18,Port 1,Selesai

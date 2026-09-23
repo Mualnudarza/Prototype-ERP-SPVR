@@ -28,9 +28,18 @@
       </div>
 
       <div class="row g-3 mb-3">
-        <div class="col-6 col-md-4"><div class="kpi-card mono"><div class="kpi-label">Total Success</div><div class="kpi-value" id="kpi-success">0</div></div></div>
-        <div class="col-6 col-md-4"><div class="kpi-card mono"><div class="kpi-label">Total Failed</div><div class="kpi-value" id="kpi-failed">0</div></div></div>
-        <div class="col-6 col-md-4"><div class="kpi-card mono"><div class="kpi-label">Total Progress</div><div class="kpi-value" id="kpi-progress">0</div></div></div>
+        <div class="col-6 col-md-3"><div class="kpi-card mono"><div class="kpi-label">Total Success</div><div class="kpi-value text-success" id="kpi-success">0</div></div></div>
+        <div class="col-6 col-md-3"><div class="kpi-card mono"><div class="kpi-label">Total Failed</div><div class="kpi-value text-danger" id="kpi-failed">0</div></div></div>
+        <div class="col-6 col-md-3"><div class="kpi-card mono"><div class="kpi-label">Total Progress</div><div class="kpi-value text-info" id="kpi-progress">0</div></div></div>
+        <div class="col-6 col-md-3"><div class="kpi-card mono"><div class="kpi-label">Total Overdue (>14 Hr)</div><div class="kpi-value text-danger" id="kpi-overdue">0</div></div></div>
+      </div>
+
+      <div class="panel-card mb-3">
+        <div class="panel-title d-flex justify-content-between align-items-center">
+          <span>Daftar Pengambilan Modem Tertunda / Bottleneck</span>
+          <span class="badge bg-danger">Prioritas Tindak Lanjut</span>
+        </div>
+        <div id="bottleneckTable"></div>
       </div>
 
       <div class="panel-card">
@@ -117,14 +126,46 @@ document.addEventListener("DOMContentLoaded", () => {
     const suc = data.reduce((n,r)=>n+r.self_success+r.bm_success,0);
     const fail = data.reduce((n,r)=>n+r.self_failed+r.bm_failed,0);
     const prog = data.reduce((n,r)=>n+r.self_progress+r.bm_progress,0);
+    const branch = getGlobalBranch();
+    const overdueCount = (window.WO_DISMANTLE || []).filter(w => (!branch || w.branch === branch) && (w.is_overdue || w.age_days > 14)).length;
     document.getElementById("kpi-success").textContent = suc;
     document.getElementById("kpi-failed").textContent = fail;
     document.getElementById("kpi-progress").textContent = prog;
+    document.getElementById("kpi-overdue").textContent = overdueCount;
+  }
+
+  function renderBottleneck() {
+    const branch = getGlobalBranch();
+    const branchWo = (window.WO_DISMANTLE || []).filter(w => (!branch || w.branch === branch) && w.status !== "Complete" && w.status !== "Selesai");
+
+    const mount = document.getElementById("bottleneckTable");
+    if (!mount) return;
+    mount.innerHTML = "";
+    const innerNode = document.createElement("div");
+    innerNode.id = "bottleneck_inner";
+    mount.appendChild(innerNode);
+
+    renderSimpleTable({
+      mountId: "bottleneck_inner",
+      data: branchWo,
+      pageSize: 5,
+      searchKeys: ["customer_name", "branch", "sales", "bottleneck_reason"],
+      columns: [
+        {label: "Branch", key: "branch"},
+        {label: "Customer", key: "customer_name"},
+        {label: "Sales / PIC", key: "sales"},
+        {label: "Umur WO", render: r => `<span class="badge ${r.is_overdue ? 'bg-danger' : 'bg-warning text-dark'}">${r.age_days || 15} hari</span>`},
+        {label: "Keterangan Visit", render: r => `<span class="text-muted small">${r.bottleneck_reason || "Akses rumah sulit"}</span>`},
+        {label: "Status", render: r => badge(r.status || "Dalam Proses")},
+        {label: "Hasil", render: r => r.is_overdue ? '<span class="badge bg-danger">Overdue</span>' : '<span class="badge bg-success">On-track</span>'}
+      ]
+    });
   }
 
   function renderMain() {
     const data = salesData();
     updateKpi(data);
+    renderBottleneck();
     let rows = [...data];
     if (sortSt.key) rows.sort((a,b)=>((a[sortSt.key]||0)>(b[sortSt.key]||0)?1:-1)*(sortSt.dir==="asc"?1:-1));
     
@@ -181,14 +222,16 @@ document.addEventListener("DOMContentLoaded", () => {
         return [
           w.customer_name, w.pppoe_secret, w.sales, w.terminator,
           percobaan, akurasi,
+          (w.age_days || 12) + ' hr',
+          w.bottleneck_reason || '-',
           w.expired_date.split('-').reverse().join('/'),
-          w.status
+          badge(w.status)
         ];
       });
-      const headers = ['Nama Customer','PPPoE Secret','Surveyor','Assign By','Percobaan','Akurasi','Hasil','Keputusan'];
+      const headers = ['Nama Customer','PPPoE Secret','Surveyor','Assign By','Percobaan','Akurasi','Umur WO','Kendala Bottleneck','Tgl Expired','Status'];
       detailWoTable.innerHTML = `<div class="table-responsive"><table class="table table-sm table-hover align-middle"><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${
         woRows.length ? woRows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('') :
-        '<tr><td colspan="8" class="table-empty">Tidak ada data WO Dismantle pada periode ini.</td></tr>'
+        '<tr><td colspan="10" class="table-empty">Tidak ada data WO Dismantle pada periode ini.</td></tr>'
       }</tbody></table></div>`;
     }
 

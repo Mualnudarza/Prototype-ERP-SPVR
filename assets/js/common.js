@@ -53,8 +53,22 @@ function getSortType(val) {
 function renderSimpleTable(opts){
   const mount = document.getElementById(opts.mountId);
   if (!mount) return;
-  const pageSize = opts.pageSize || 8;
-  let state = { page: 1, keyword: "", sortKey: null, sortDir: "asc" };
+
+  let defaultSortKey = null;
+  let defaultSortDir = "asc";
+  if (opts.defaultSortCol !== undefined) {
+    defaultSortKey = opts.defaultSortCol;
+    defaultSortDir = opts.defaultSortDir || "desc";
+  } else if (opts.columns && opts.columns.length) {
+    const dateIdx = opts.columns.findIndex(c => c.key && /open_date|tanggal|date|tgl|created_at|timestamp/i.test(c.key));
+    if (dateIdx !== -1) {
+      defaultSortKey = dateIdx;
+      defaultSortDir = "desc";
+    }
+  }
+
+  let pageSize = opts.pageSize || 10;
+  let state = { page: 1, keyword: "", sortKey: defaultSortKey, sortDir: defaultSortDir };
 
   const getCellValue = (row, col) => col.render ? col.render(row) : (row[col.key] ?? "");
 
@@ -112,11 +126,19 @@ function renderSimpleTable(opts){
     }
 
     mount.innerHTML = `
-      <div class="table-toolbar">
-        <div class="search-box w-100">
+      <div class="table-toolbar d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+        <div class="search-box flex-grow-1" style="max-width:320px;">
           <input type="text" class="form-control form-control-sm" placeholder="Cari data..." id="${opts.mountId}-search" value="${state.keyword}">
         </div>
-        <div class="pagination-info">${rows.length} data ditemukan</div>
+        <div class="d-flex align-items-center gap-2 ms-auto">
+          <label class="form-label mb-0 small text-muted text-nowrap" for="${opts.mountId}-pagesize">Per hal:</label>
+          <select class="form-select form-select-sm" id="${opts.mountId}-pagesize" style="width:auto;">
+            <option value="10" ${pageSize===10?'selected':''}>10</option>
+            <option value="20" ${pageSize===20?'selected':''}>20</option>
+            <option value="50" ${pageSize===50?'selected':''}>50</option>
+          </select>
+          <div class="pagination-info small text-muted text-nowrap">${rows.length} data</div>
+        </div>
       </div>
       <div class="table-responsive">
         <table class="table table-hover align-middle">
@@ -132,6 +154,15 @@ function renderSimpleTable(opts){
         </nav>
       </div>` : ""}
     `;
+
+    const pageSizeSelect = document.getElementById(opts.mountId + "-pagesize");
+    if (pageSizeSelect) {
+      pageSizeSelect.addEventListener("change", (e) => {
+        pageSize = parseInt(e.target.value, 10) || 10;
+        state.page = 1;
+        draw();
+      });
+    }
 
     const pag = document.getElementById(opts.mountId + "-pagination");
     if (pag) {

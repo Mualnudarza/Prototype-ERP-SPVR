@@ -41,34 +41,40 @@
       </div>
 
       <div class="row g-3 mb-3" id="kpiRow">
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md-4 col-lg">
           <div class="kpi-card mono">
             <div class="kpi-label">Total Customer</div>
             <div class="kpi-value" id="kpiTotal">0</div>
           </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md-4 col-lg">
           <div class="kpi-card mono">
             <div class="kpi-label">Customer Aktif</div>
-            <div class="kpi-value" id="kpiAktif">0</div>
+            <div class="kpi-value text-success" id="kpiAktif">0</div>
           </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md-4 col-lg">
           <div class="kpi-card mono">
             <div class="kpi-label">Customer Isolir</div>
-            <div class="kpi-value" id="kpiIsolir">0</div>
+            <div class="kpi-value text-warning" id="kpiIsolir">0</div>
           </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md-4 col-lg">
           <div class="kpi-card mono">
             <div class="kpi-label">Customer Terminate</div>
-            <div class="kpi-value" id="kpiTerminate">0</div>
+            <div class="kpi-value text-danger" id="kpiTerminate">0</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg">
+          <div class="kpi-card mono">
+            <div class="kpi-label">Terminate Rate</div>
+            <div class="kpi-value text-danger" id="kpiTerminateRate">0%</div>
           </div>
         </div>
       </div>
 
       <div class="panel-card mb-3">
-        <div class="panel-title">Tren Status Customer</div>
+        <div class="panel-title">Tren Status Customer (6 Bulan Terakhir)</div>
         <div style="height:260px; position:relative;">
           <canvas id="trendChart"></canvas>
         </div>
@@ -169,10 +175,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const activeCount = base.filter(c => c.status === "Aktif").length;
     const isolirCount = base.filter(c => c.status === "Isolir").length;
     const terminateCount = base.filter(c => c.status === "Terminate").length;
+    const terminateRate = base.length ? ((terminateCount / base.length) * 100).toFixed(1) + "%" : "0%";
+
     document.getElementById("kpiTotal").textContent = base.length;
     document.getElementById("kpiAktif").textContent = activeCount;
     document.getElementById("kpiIsolir").textContent = isolirCount;
     document.getElementById("kpiTerminate").textContent = terminateCount;
+    document.getElementById("kpiTerminateRate").textContent = terminateRate;
+
     const dummyTrendData = {
       labels: ["Jan","Feb","Mar","Apr","Mei","Jun"],
       datasets: [
@@ -188,6 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
       data: dummyTrendData,
       options: { maintainAspectRatio: false, plugins: { legend: { position: "bottom" } }, scales: { y: { beginAtZero: true } } }
     });
+
     table.setFilter(getTableFiltered);
   }
 

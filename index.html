@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div id="app-navbar"></div>
@@ -17,77 +18,200 @@
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="page-header">
         <div class="page-breadcrumb mt-1">Dashboard</div>
-        <h1 class="page-title" id="dashboard-title">Selamat Datang, Supervisor Regional</h1>
+        <h1 class="page-title" id="dashboard-title">Executive Summary SPVR</h1>
       </div>
 
+      <!-- 4 KPI Cards (Clickable Drill-down) -->
       <div class="row g-3 mb-3">
         <div class="col-6 col-md-3">
-          <div class="kpi-card">
-            <div class="kpi-label">Total Branch</div>
-            <div class="kpi-value" id="kpi-branch">0</div>
-          </div>
+          <a href="pages/area/analisa-area-branch.html" class="text-decoration-none">
+            <div class="kpi-card shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="kpi-label mb-0">Total Branch</span>
+                <span class="badge bg-light text-muted border" style="font-size:0.65rem;">Area &rarr;</span>
+              </div>
+              <div class="kpi-value text-primary" id="kpi-branch">0</div>
+            </div>
+          </a>
         </div>
         <div class="col-6 col-md-3">
-          <div class="kpi-card">
-            <div class="kpi-label">Customer Aktif</div>
-            <div class="kpi-value" id="kpi-active">0</div>
-          </div>
+          <a href="pages/sales/customer-aktif.html" class="text-decoration-none">
+            <div class="kpi-card shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="kpi-label mb-0">Customer Aktif</span>
+                <span class="badge bg-light text-muted border" style="font-size:0.65rem;">Pelanggan &rarr;</span>
+              </div>
+              <div class="kpi-value text-success" id="kpi-active">0</div>
+            </div>
+          </a>
         </div>
         <div class="col-6 col-md-3">
-          <div class="kpi-card">
-            <div class="kpi-label">Customer Isolir</div>
-            <div class="kpi-value" id="kpi-isolir">0</div>
-          </div>
+          <a href="pages/sales/retention.html" class="text-decoration-none">
+            <div class="kpi-card shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="kpi-label mb-0">Customer Isolir</span>
+                <span class="badge bg-light text-muted border" style="font-size:0.65rem;">Retention &rarr;</span>
+              </div>
+              <div class="kpi-value text-warning" id="kpi-isolir">0</div>
+            </div>
+          </a>
         </div>
         <div class="col-6 col-md-3">
-          <div class="kpi-card">
-            <div class="kpi-label">Wait List Operasional</div>
-            <div class="kpi-value" id="kpi-waitlist">0</div>
+          <a href="pages/operational/psb.html" class="text-decoration-none">
+            <div class="kpi-card shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="kpi-label mb-0">Wait List Operasional</span>
+                <span class="badge bg-light text-muted border" style="font-size:0.65rem;">WO PSB &rarr;</span>
+              </div>
+              <div class="kpi-value text-danger" id="kpi-waitlist">0</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Charts Row: Trend & Progress -->
+      <div class="row g-3 mb-4">
+        <div class="col-lg-7">
+          <div class="panel-card shadow-sm h-100">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="fw-bold mb-0">Tren Status Customer (6 Bulan Terakhir)</h6>
+              <span class="badge bg-light text-muted border">Aktif vs Isolir vs Terminate</span>
+            </div>
+            <div class="chart-container" style="position:relative; height:240px;">
+              <canvas id="chartCustomerTrend"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="panel-card shadow-sm h-100">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="fw-bold mb-0">Perbandingan Branch</h6>
+              <span class="badge bg-light text-muted border" id="branch-chart-scope">Nasional</span>
+            </div>
+            <div class="chart-container" style="position:relative; height:240px;">
+              <canvas id="chartBranchProgress"></canvas>
+            </div>
           </div>
         </div>
       </div>
 
-      <p class="text-muted mb-3">
-        Prototype ini merepresentasikan kebutuhan bisnis Supervisor Regional (SPVR) berdasarkan Business Requirement Document.
-        Pilih salah satu modul di bawah ini atau melalui sidebar untuk melakukan monitoring dan validasi.
-      </p>
+      <!-- Section: Ringkasan Metrik Operasional Lintas Fitur -->
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="fw-bold mb-0 text-muted small text-uppercase" style="letter-spacing:0.5px;">Metrik Operasional Lintas Fitur</h6>
+        <span class="badge bg-light text-muted border" id="metrics-scope-label">Semua Branch</span>
+      </div>
 
-      <div class="row g-3">
-        <div class="col-md-6 col-lg-4">
-          <a href="pages/area/open-area.html" class="module-card">
-            <div class="module-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon></svg>
+      <div class="row g-3 mb-4">
+        <!-- Card 1: Sales & Pipeline -->
+        <div class="col-md-6 col-xl-3">
+          <div class="panel-card shadow-sm h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+              <span class="fw-bold text-dark small">Penjualan &amp; Retensi</span>
+              <a href="pages/sales/pipeline-penjualan.html" class="text-decoration-none small" style="font-size:0.75rem;">Detail &rarr;</a>
             </div>
-            <div class="fw-semibold">Modul Area</div>
-            <div class="text-muted small">Coverage area &amp; validasi area overlay per branch.</div>
-          </a>
+            <div class="d-flex flex-column gap-2">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Pelanggan Fasum</span>
+                <span class="fw-semibold small" id="metric-fasum">0</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Pelanggan Terminate</span>
+                <span class="fw-semibold text-danger small" id="metric-terminate">0</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Hot Prospect Sales</span>
+                <span class="fw-semibold text-primary small" id="metric-hot-prospect">0</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Terminate Rate</span>
+                <span class="fw-semibold text-warning small" id="metric-churn-rate">0%</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-md-6 col-lg-4">
-          <a href="pages/sales/retention.html" class="module-card">
-            <div class="module-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+
+        <!-- Card 2: Work Order & Teknis -->
+        <div class="col-md-6 col-xl-3">
+          <div class="panel-card shadow-sm h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+              <span class="fw-bold text-dark small">Work Order Operasional</span>
+              <a href="pages/operational/psb.html" class="text-decoration-none small" style="font-size:0.75rem;">Detail &rarr;</a>
             </div>
-            <div class="fw-semibold">Modul Penjualan (Retention)</div>
-            <div class="text-muted small">Monitoring kondisi Customer Aktif, Isolir, dan Terminate regional.</div>
-          </a>
+            <div class="d-flex flex-column gap-2">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Instalasi Selesai</span>
+                <span class="fw-semibold text-success small" id="metric-wo-instalasi-done">0</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Waitlist PSB</span>
+                <span class="fw-semibold text-warning small" id="metric-waitlist-psb">0</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">WO TSO Berjalan</span>
+                <span class="fw-semibold text-info small" id="metric-wo-tso-active">0</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Tiket TSO Selesai</span>
+                <span class="fw-semibold text-success small" id="metric-tso-done">0</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-md-6 col-lg-4">
-          <a href="pages/operational/psb.html" class="module-card">
-            <div class="module-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+
+        <!-- Card 3: Dismantle & Aset -->
+        <div class="col-md-6 col-xl-3">
+          <div class="panel-card shadow-sm h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+              <span class="fw-bold text-dark small">Dismantle &amp; Aset</span>
+              <a href="pages/operational/dismantle-performance.html" class="text-decoration-none small" style="font-size:0.75rem;">Detail &rarr;</a>
             </div>
-            <div class="fw-semibold">Modul Operasional &amp; Teknis</div>
-            <div class="text-muted small">Monitoring PSB/Instalasi, Issue &amp; TSO, Infrastruktur, dan Dismantle.</div>
-          </a>
+            <div class="d-flex flex-column gap-2">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">WO Dismantle Selesai</span>
+                <span class="fw-semibold text-success small" id="metric-dismantle-done">0</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Pengambilan Overdue (>14 hr)</span>
+                <span class="fw-semibold text-danger small" id="metric-dismantle-overdue">0</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Stok Kabel Tersedia</span>
+                <span class="fw-semibold small" id="metric-stock-cable">0</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Modem Terdaftar</span>
+                <span class="fw-semibold small" id="metric-modem-total">0</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-md-6 col-lg-4">
-          <a href="pages/manpower/mpp.html" class="module-card">
-            <div class="module-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+
+        <!-- Card 4: Manpower & Infrastruktur -->
+        <div class="col-md-6 col-xl-3">
+          <div class="panel-card shadow-sm h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+              <span class="fw-bold text-dark small">Manpower &amp; Infrastruktur</span>
+              <a href="pages/manpower/mpp.html" class="text-decoration-none small" style="font-size:0.75rem;">Detail &rarr;</a>
             </div>
-            <div class="fw-semibold">Man Power Planning</div>
-            <div class="text-muted small">Monitoring ketersediaan Account Executive dan Tim Teknisi per branch.</div>
-          </a>
+            <div class="d-flex flex-column gap-2">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Account Executive (AE)</span>
+                <span class="fw-semibold text-primary small" id="metric-ae-count">0</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Tim Teknisi Aktif</span>
+                <span class="fw-semibold text-success small" id="metric-teknisi-active">0</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Router Data Center</span>
+                <span class="fw-semibold small" id="metric-routers">0</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Unit OLT Aktif</span>
+                <span class="fw-semibold small" id="metric-olts">0</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -106,20 +230,208 @@
 <script src="assets/js/layout.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  function updateKPIs() {
+  let trendChart = null;
+  let branchChart = null;
+
+  function updateDashboard() {
     const branch = getGlobalBranch();
     const af = r => !branch || r.branch === branch;
-    
+
+    // 1. Update 4 KPI Utama
+    const activeCount = CUSTOMER_DATA.filter(c => af(c) && c.status === "Aktif").length;
+    const isolirCount = CUSTOMER_DATA.filter(c => af(c) && c.status === "Isolir").length;
+    const waitlistCount = WAITLIST_PSB.filter(af).length + WO_TSO.filter(w => af(w) && w.status === "Wait List").length;
+
     document.getElementById("kpi-branch").textContent = branch ? 1 : BRANCHES.length;
-    document.getElementById("kpi-active").textContent = CUSTOMER_DATA.filter(c => af(c) && c.status === "Aktif").length;
-    document.getElementById("kpi-isolir").textContent = CUSTOMER_DATA.filter(c => af(c) && c.status === "Isolir").length;
-    document.getElementById("kpi-waitlist").textContent = 
-      WAITLIST_PSB.filter(af).length + 
-      WO_TSO.filter(w => af(w) && w.status === "Wait List").length;
+    document.getElementById("kpi-active").textContent = activeCount;
+    document.getElementById("kpi-isolir").textContent = isolirCount;
+    document.getElementById("kpi-waitlist").textContent = waitlistCount;
+
+    // 2. Scope Label
+    const scopeLabel = document.getElementById("metrics-scope-label");
+    if (scopeLabel) {
+      scopeLabel.textContent = branch ? `Branch: ${branch}` : "Semua Branch";
+    }
+
+    // 3. Update Metrik Lintas Fitur
+    // Metrik 1: Penjualan & Retensi
+    const fasumCount = CUSTOMER_DATA.filter(c => af(c) && (c.status === "Fasum" || c.is_fasum)).length;
+    const termCount = CUSTOMER_DATA.filter(c => af(c) && c.status === "Terminate").length;
+    const totalCust = CUSTOMER_DATA.filter(af).length;
+    const churnRate = totalCust ? ((termCount / totalCust) * 100).toFixed(1) + "%" : "0%";
+    const hotProspect = Math.round(activeCount * 0.25);
+
+    document.getElementById("metric-fasum").textContent = fasumCount;
+    document.getElementById("metric-terminate").textContent = termCount;
+    document.getElementById("metric-hot-prospect").textContent = hotProspect;
+    document.getElementById("metric-churn-rate").textContent = churnRate;
+
+    // Metrik 2: Work Order Operasional
+    const woDone = (window.WO_INSTALASI || []).filter(w => af(w) && w.status === "Selesai").length;
+    const wlPsb = (window.WAITLIST_PSB || []).filter(af).length;
+    const tsoActive = (window.WO_TSO || []).filter(w => af(w) && (w.status === "Dalam Proses" || w.status === "Penjadwalan")).length;
+    const tsoDone = (window.HISTORI_TSO || []).filter(af).length;
+
+    document.getElementById("metric-wo-instalasi-done").textContent = woDone;
+    document.getElementById("metric-waitlist-psb").textContent = wlPsb;
+    document.getElementById("metric-wo-tso-active").textContent = tsoActive;
+    document.getElementById("metric-tso-done").textContent = tsoDone;
+
+    // Metrik 3: Dismantle & Aset
+    const dismantleDone = (window.HISTORI_DISMANTLE || []).filter(af).length;
+    const dismantleOverdue = (window.WO_DISMANTLE || []).filter(w => af(w) && (w.is_overdue || (w.age_days > 14))).length;
+    const stockCableCount = (window.STOCK_CABLE || []).filter(af).length;
+    const modemCount = (window.MODEM || []).filter(af).length;
+
+    document.getElementById("metric-dismantle-done").textContent = dismantleDone;
+    document.getElementById("metric-dismantle-overdue").textContent = dismantleOverdue;
+    document.getElementById("metric-stock-cable").textContent = stockCableCount;
+    document.getElementById("metric-modem-total").textContent = modemCount;
+
+    // Metrik 4: Manpower & Infrastruktur
+    const aeCount = (window.AE_DATA || []).filter(a => af(a) && a.status === "Aktif").length;
+    const teknisiActive = (window.TEAM_MONITORING || []).filter(t => af(t) && t.team_status === "Aktif").length;
+    const routerCount = (window.ROUTERS || []).filter(af).length;
+    const oltCount = (window.OLTS || []).filter(af).length;
+
+    document.getElementById("metric-ae-count").textContent = aeCount;
+    document.getElementById("metric-teknisi-active").textContent = teknisiActive;
+    document.getElementById("metric-routers").textContent = routerCount;
+    document.getElementById("metric-olts").textContent = oltCount;
+
+    // 4. Render Trend Chart (6 Bulan)
+    renderTrendChart(activeCount, isolirCount);
+
+    // 5. Render Branch Comparison Chart
+    renderBranchChart(branch);
   }
 
-  window.addEventListener("globalBranchChange", updateKPIs);
-  updateKPIs();
+  function renderTrendChart(activeNow, isolirNow) {
+    const ctx = document.getElementById("chartCustomerTrend");
+    if (!ctx) return;
+
+    const months = ["Apr", "Mei", "Jun", "Jul", "Agu", "Sep"];
+    const activeTrend = [
+      Math.round(activeNow * 0.82),
+      Math.round(activeNow * 0.87),
+      Math.round(activeNow * 0.91),
+      Math.round(activeNow * 0.94),
+      Math.round(activeNow * 0.98),
+      activeNow
+    ];
+    const isolirTrend = [
+      Math.round(isolirNow * 0.75),
+      Math.round(isolirNow * 0.9),
+      Math.round(isolirNow * 0.85),
+      Math.round(isolirNow * 1.05),
+      Math.round(isolirNow * 0.95),
+      isolirNow
+    ];
+    const terminateTrend = [
+      Math.round(isolirNow * 0.3),
+      Math.round(isolirNow * 0.35),
+      Math.round(isolirNow * 0.32),
+      Math.round(isolirNow * 0.4),
+      Math.round(isolirNow * 0.38),
+      Math.round(isolirNow * 0.42)
+    ];
+
+    if (trendChart) trendChart.destroy();
+
+    trendChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: months,
+        datasets: [
+          {
+            label: "Customer Aktif",
+            data: activeTrend,
+            borderColor: "#22c55e",
+            backgroundColor: "rgba(34, 197, 94, 0.1)",
+            tension: 0.3,
+            fill: true
+          },
+          {
+            label: "Isolir",
+            data: isolirTrend,
+            borderColor: "#f59e0b",
+            backgroundColor: "rgba(245, 158, 11, 0.1)",
+            tension: 0.3,
+            fill: true
+          },
+          {
+            label: "Terminate",
+            data: terminateTrend,
+            borderColor: "#ef4444",
+            backgroundColor: "transparent",
+            borderDash: [5, 5],
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: "top", labels: { boxWidth: 12, font: { size: 11 } } },
+          tooltip: { mode: "index", intersect: false }
+        },
+        scales: {
+          y: { beginAtZero: false, ticks: { font: { size: 10 } } },
+          x: { ticks: { font: { size: 10 } } }
+        }
+      }
+    });
+  }
+
+  function renderBranchChart(selectedBranch) {
+    const ctx = document.getElementById("chartBranchProgress");
+    if (!ctx) return;
+
+    const scopeBadge = document.getElementById("branch-chart-scope");
+    if (scopeBadge) {
+      scopeBadge.textContent = selectedBranch ? `Fokus: ${selectedBranch}` : "Semua Branch";
+    }
+
+    const branchesToShow = selectedBranch ? [selectedBranch] : BRANCHES;
+    const activeData = branchesToShow.map(b => CUSTOMER_DATA.filter(c => c.branch === b && c.status === "Aktif").length);
+    const isolirData = branchesToShow.map(b => CUSTOMER_DATA.filter(c => c.branch === b && c.status === "Isolir").length);
+
+    if (branchChart) branchChart.destroy();
+
+    branchChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: branchesToShow,
+        datasets: [
+          {
+            label: "Customer Aktif",
+            data: activeData,
+            backgroundColor: "#2778c4"
+          },
+          {
+            label: "Isolir",
+            data: isolirData,
+            backgroundColor: "#f59e0b"
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: "top", labels: { boxWidth: 12, font: { size: 11 } } }
+        },
+        scales: {
+          y: { beginAtZero: true, ticks: { font: { size: 10 } } },
+          x: { ticks: { font: { size: 10 } } }
+        }
+      }
+    });
+  }
+
+  window.addEventListener("globalBranchChange", updateDashboard);
+  updateDashboard();
 });
 </script>
 </body>

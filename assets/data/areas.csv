@@ -29,3 +29,21 @@ id,branch,area_name,area_code,is_primary,area_primary_id,open_date,customer_acti
 28,Bumiaji,LAHO - Overlay,AR-028,0,27,15-Mar-26,22,3,1,2
 29,Dau,GOJO,AR-029,1,,15-Mar-26,48,15,4,6
 30,Dau,GOJO - Overlay,AR-030,0,29,22-Apr-26,26,5,2,3
+31,Temas,SELO,AR-031,1,,05-Aug-26,50,4,1,3
+32,Temas,SELO - Overlay,AR-032,0,31,12-Aug-26,16,2,0,1
+33,Bumiaji,PUNT,AR-033,1,,15-Aug-26,58,5,2,4
+34,Bumiaji,PUNT - Overlay,AR-034,0,33,20-Aug-26,20,3,1,2
+35,Dau,KALI,AR-035,1,,25-Aug-26,62,6,3,5
+36,Dau,KALI - Overlay,AR-036,0,35,28-Aug-26,24,2,1,2
+37,Temas,WANG,AR-037,1,,02-Sep-26,45,3,1,2
+38,Temas,WANG - Overlay,AR-038,0,37,08-Sep-26,14,1,0,1
+39,Bumiaji,SUMB,AR-039,1,,12-Sep-26,52,4,2,3
+40,Bumiaji,SUMB - Overlay,AR-040,0,39,18-Sep-26,18,2,1,2
+41,Dau,PETU,AR-041,1,,22-Sep-26,55,5,1,4
+42,Dau,PETU - Overlay,AR-042,0,41,27-Sep-26,20,3,1,2
+43,Temas,BEND,AR-043,1,,03-Oct-26,38,2,0,2
+44,Temas,BEND - Overlay,AR-044,0,43,09-Oct-26,12,1,0,1
+45,Bumiaji,TULI,AR-045,1,,14-Oct-26,44,3,1,3
+46,Bumiaji,TULI - Overlay,AR-046,0,45,19-Oct-26,15,2,0,2
+47,Dau,JUNR,AR-047,1,,23-Oct-26,48,4,1,3
+48,Dau,JUNR - Overlay,AR-048,0,47,28-Oct-26,17,2,1,1

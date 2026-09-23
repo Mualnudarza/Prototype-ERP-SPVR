@@ -42,8 +42,7 @@ function renderLayout() {
         <ul class="nav flex-column">
             ${item("index.html", "dashboard", "home", "Dashboard")}
             ${heading("Area")}
-            ${item("pages/area/open-area.html", "area-open", "map", "Coverage Area")}
-            ${item("pages/area/analisa-area-branch.html", "area-analisa-branch", "bar-chart", "Analisa Area Branch")}
+            ${item("pages/area/analisa-area-branch.html", "area-coverage", "map", "Coverage Area")}
             ${heading("Sales")}
             ${item("pages/sales/retention.html", "sales-retention", "users", "Customer Isolir & Terminate")}
             ${item("pages/sales/customer-aktif.html", "sales-customer-aktif", "star", "Customer Aktif & Fasum")}
@@ -80,6 +79,35 @@ function renderLayout() {
       setGlobalBranch(e.target.value);
     });
   }
+
+  function updateScopeBadge(branch) {
+    const pageHeader = document.querySelector(".page-header");
+    if (!pageHeader) return;
+    let badgeEl = document.getElementById("scope-indicator-badge");
+    if (!badgeEl) {
+      badgeEl = document.createElement("span");
+      badgeEl.id = "scope-indicator-badge";
+      const titleEl = pageHeader.querySelector(".page-title") || pageHeader;
+      titleEl.appendChild(badgeEl);
+    }
+    if (branch) {
+      badgeEl.className = "badge bg-info text-dark ms-2 align-middle fs-6";
+      badgeEl.textContent = `Scope: Branch ${branch}`;
+    } else {
+      badgeEl.className = "badge bg-primary text-white ms-2 align-middle fs-6";
+      badgeEl.textContent = "Scope: Semua Branch (Nasional)";
+    }
+  }
+
+  window.addEventListener("globalBranchChange", (e) => {
+    const branch = e.detail ? e.detail.branch : getGlobalBranch();
+    if (globalBranchFilter && globalBranchFilter.value !== branch) {
+      globalBranchFilter.value = branch;
+    }
+    updateScopeBadge(branch);
+  });
+
+  updateScopeBadge(getGlobalBranch());
 }
 
 const ICONS = {

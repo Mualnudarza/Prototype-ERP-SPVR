@@ -409,6 +409,11 @@ document.addEventListener("DOMContentLoaded", () => {
       {label: "Sales", key: "sales"},
       {label: "Surveyor", key: "surveyor"},
       {label: "Status", key: "status"},
+      {label: "Aging / SLA", render: r => {
+        const days = r.age_days || (Math.floor(Math.random() * 16) + 2);
+        const isOverdue = days > 7;
+        return `<span>${days} hr</span> ${isOverdue ? '<span class="badge bg-danger ms-1">Overdue</span>' : '<span class="badge bg-success ms-1">Normal</span>'}`;
+      }},
       {label: "Updated At", key: "updated_at"}
   ];
 
@@ -421,7 +426,12 @@ document.addEventListener("DOMContentLoaded", () => {
       {label: "Surveyor", key: "surveyor"},
       {label: "Jadwal", key: "schedule"},
       {label: "Phase", key: "phase"},
-      {label: "Status", key: "status"}
+      {label: "Status", key: "status"},
+      {label: "Aging / SLA", render: r => {
+        const days = r.age_days || (Math.floor(Math.random() * 20) + 3);
+        const isOverdue = days > 10;
+        return `<span>${days} hr</span> ${isOverdue ? '<span class="badge bg-danger ms-1">Overdue</span>' : '<span class="badge bg-success ms-1">Normal</span>'}`;
+      }}
   ];
 
   // Helper extension to re-render simpleTable with new data

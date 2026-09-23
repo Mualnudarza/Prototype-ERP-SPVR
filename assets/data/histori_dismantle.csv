@@ -14,3 +14,15 @@ id,branch,customer_name,pppoe_secret,phone,sales,terminator,finish_date,result
 13,Dau,Bayu Aditya 13,cust5012,081350002076,Rahmat Hidayat,Bagus,01-Jan-26,Perangkat Sebagian
 14,Temas,Citra Ayu 14,cust5013,081350002249,Putri Ayu,Irwan,08-Feb-26,Perangkat Kembali Lengkap
 15,Bumiaji,Ahmad Fauzi 15,cust5014,081350002422,Reza Pratama,Dwi,15-Mar-26,Perangkat Kembali Lengkap
+16,Temas,Ilham Saputra 82,cust1082,081230009042,Andi Wijaya,Bagus,10-Aug-26,Perangkat Kembali Lengkap
+17,Bumiaji,Gilang Ramadhan 80,cust1080,081230008768,Yusuf Bahtiar,Irwan,17-Aug-26,Perangkat Sebagian
+18,Dau,Eko Wahyudi 90,cust1090,081230009864,Farida Amelia,Dwi,24-Aug-26,Perangkat Kembali Lengkap
+19,Temas,Mega Utami 81,cust1081,081230008905,Rahmat Hidayat,Bagus,29-Aug-26,Tidak Ditemukan
+20,Temas,Farhan Maulana 97,cust1097,081230010686,Reza Pratama,Bagus,05-Sep-26,Perangkat Kembali Lengkap
+21,Bumiaji,Ratna Juwita 98,cust1098,081230010823,Dewi Lestari,Irwan,14-Sep-26,Perangkat Kembali Lengkap
+22,Dau,Gita Gutawa 105,cust1105,081230011645,Nia Kartika,Dwi,21-Sep-26,Perangkat Sebagian
+23,Temas,Dina Mariana 94,cust1094,081230010412,Andi Wijaya,Bagus,27-Sep-26,Perangkat Kembali Lengkap
+24,Temas,Raffi Ahmad 114,cust1114,081230012741,Rahmat Hidayat,Bagus,06-Oct-26,Perangkat Kembali Lengkap
+25,Bumiaji,Teuku Wisnu 113,cust1113,081230012604,Putri Ayu,Irwan,15-Oct-26,Perangkat Kembali Lengkap
+26,Dau,Paula Verhoeven 117,cust1117,081230013152,Nia Kartika,Dwi,20-Oct-26,Tidak Ditemukan
+27,Temas,Zaskia Sungkar 112,cust1112,081230012467,Reza Pratama,Bagus,28-Oct-26,Perangkat Kembali Lengkap
